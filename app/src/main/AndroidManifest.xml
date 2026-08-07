@@ -25,6 +25,10 @@
             android:name=".SignUpActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".GenderActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

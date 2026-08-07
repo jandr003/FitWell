@@ -26,12 +26,11 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
 
-        // 1. I-initialize ang mga Views gamit ang tamang IDs mula sa XML
         val nameEt = findViewById<EditText>(R.id.nameEt)
         val contactEt = findViewById<EditText>(R.id.contactEt)
         val emailEt = findViewById<EditText>(R.id.emailEt)
         val passwordEt = findViewById<EditText>(R.id.passwordEt)
-        val rePasswordEt = findViewById<EditText>(R.id.rePasswordEt) // Binago mula confirmPasswordEt
+        val rePasswordEt = findViewById<EditText>(R.id.rePasswordEt)
         val signUpBtn = findViewById<AppCompatButton>(R.id.signUpBtn)
         val loginTxt = findViewById<TextView>(R.id.loginTxt)
 
@@ -42,7 +41,6 @@ class SignUpActivity : AppCompatActivity() {
             val password = passwordEt.text.toString().trim()
             val rePassword = rePasswordEt.text.toString().trim()
 
-            // Validation
             if (name.isEmpty() || contact.isEmpty() || email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -53,7 +51,9 @@ class SignUpActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, "Signing up...", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, GenderActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
 
         loginTxt.setOnClickListener {
