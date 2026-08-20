@@ -1,24 +1,35 @@
 # FitWell
 
-FitWell is an Android fitness app built to help users keep track of their workouts and daily fitness progress. The application provides essential tools for managing workout routines and monitoring personal fitness goals.
+**FitWell** is an Android fitness application designed to help users manage their workouts and monitor their daily fitness progress. The application provides essential tools for organizing workout routines, accessing exercises, and tracking personal fitness goals.
 
-## Features
+## ✨ Features
 
-- Authentication
-- Workout Programs
-- Exercise Library
-- BMI Calculator
-- Progress Tracker
-- Profile Management
+* **Authentication**
+* **Workout Programs**
+* **Exercise Library**
+* **BMI Calculator**
+* **Progress Tracker**
+* **Profile Management**
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- Kotlin
-- XML
-- Firebase
-- Android Studio
+| Technology         | Purpose                              |
+| ------------------ | ------------------------------------ |
+| **Kotlin**         | Android application development      |
+| **XML**            | User interface design                |
+| **Firebase**       | Backend services and data management |
+| **Android Studio** | Development environment              |
 
-## Requirements
+## 📋 Requirements
 
-- Android 10 (API 29) or later
-- Internet Connection
+Before running the application, make sure the following are available:
+
+* **Android 10 (API 29) or later**
+* **Internet Connection**
+* **Android Studio**
+
+## 📌 Project Status
+
+**Current Status: 🚧 In Development**
+
+FitWell is currently under development, with features and functionality being implemented and refined progressively.
