@@ -1,35 +1,48 @@
 # FitWell
 
-**FitWell** is an Android fitness application designed to help users manage their workouts and monitor their daily fitness progress. The application provides essential tools for organizing workout routines, accessing exercises, and tracking personal fitness goals.
+**FitWell** is an Android fitness application designed to help users manage their workouts, explore exercises, calculate BMI, and monitor their fitness progress in one place. The application is being rebuilt with a modern mobile development stack to improve its structure, usability, and overall user experience.
 
 ## ✨ Features
 
-* **Authentication**
+* **User Authentication**
 * **Workout Programs**
 * **Exercise Library**
 * **BMI Calculator**
-* **Progress Tracker**
+* **Progress Tracking**
 * **Profile Management**
 
 ## 🛠️ Tech Stack
 
-| Technology         | Purpose                              |
-| ------------------ | ------------------------------------ |
-| **Kotlin**         | Android application development      |
-| **XML**            | User interface design                |
-| **Firebase**       | Backend services and data management |
-| **Android Studio** | Development environment              |
+| Technology         | Purpose                                |
+| ------------------ | -------------------------------------- |
+| **React Native**   | Android mobile application development |
+| **TypeScript**     | Application development                |
+| **Node.js**        | Backend runtime                        |
+| **Express.js**     | REST API development                   |
+| **PostgreSQL**     | Database management                    |
+| **Android Studio** | Android development and testing        |
 
 ## 📋 Requirements
 
-Before running the application, make sure the following are available:
+Before running the application, make sure the following are installed:
 
-* **Android 10 (API 29) or later**
-* **Internet Connection**
 * **Android Studio**
+* **Android SDK**
+* **Node.js**
+* **PostgreSQL**
+* **React Native development environment**
+* **Android 10 (API 29) or later**
+
+An internet connection is required for features that communicate with the backend API.
+
+## 📱 Supported Platform
+
+* **Android Smartphones**
 
 ## 📌 Project Status
 
-**Current Status: 🚧 In Development**
+**Current Status: 🚧 Under Development**
 
-FitWell is currently under development, with features and functionality being implemented and refined progressively.
+FitWell is currently being rebuilt using a new mobile development stack. The original implementation was developed using Kotlin, XML, and Firebase, but these technologies are planned to be removed as part of the project rework.
+
+Development is focused on rebuilding the application using **React Native and TypeScript**, along with a dedicated backend and database for improved application structure and future scalability.
