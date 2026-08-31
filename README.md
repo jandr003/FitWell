@@ -39,6 +39,6 @@ The project structure and implementation are being updated as part of the redesi
 
 ## 📌 Project Status
 
-**🚧 Redesign & Development**
+**🚧 Redesigned & On Hold**
 
-FitWell is currently being redesigned and rebuilt using a new technology stack. The application is still under development, with the updated interface and implementation currently in progress.
+FitWell has been redesigned with an updated interface and a new technology stack. Further development is currently on hold and may be continued in the future.
