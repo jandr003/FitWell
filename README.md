@@ -1,6 +1,8 @@
 # FitWell
 
-**FitWell** is an Android fitness application designed to help users manage their workouts, explore exercises, calculate BMI, and monitor their fitness progress in one place. The application is being rebuilt with a modern mobile development stack to improve its structure, usability, and overall user experience.
+**FitWell** is an Android fitness application designed to help users manage their workouts, explore exercises, calculate BMI, and track their fitness progress in one place.
+
+The application is being redesigned and rebuilt using a new mobile development stack, with changes to both the user interface and the underlying technologies used in the project.
 
 ## ✨ Features
 
@@ -13,36 +15,30 @@
 
 ## 🛠️ Tech Stack
 
-| Technology         | Purpose                                |
-| ------------------ | -------------------------------------- |
-| **React Native**   | Android mobile application development |
-| **TypeScript**     | Application development                |
-| **Node.js**        | Backend runtime                        |
-| **Express.js**     | REST API development                   |
-| **PostgreSQL**     | Database management                    |
-| **Android Studio** | Android development and testing        |
-
-## 📋 Requirements
-
-Before running the application, make sure the following are installed:
-
-* **Android Studio**
-* **Android SDK**
-* **Node.js**
-* **PostgreSQL**
-* **React Native development environment**
-* **Android 10 (API 29) or later**
-
-An internet connection is required for features that communicate with the backend API.
+| Technology       | Purpose                                |
+| ---------------- | -------------------------------------- |
+| **React Native** | Android mobile application development |
+| **TypeScript**   | Application development                |
+| **Node.js**      | Backend runtime                        |
+| **Express.js**   | REST API development                   |
+| **PostgreSQL**   | Database management                    |
 
 ## 📱 Supported Platform
 
 * **Android Smartphones**
 
+## 🎨 Design
+
+The FitWell application is being redesigned with an updated interface and improved screen layouts. The redesign focuses on a cleaner structure, easier navigation, and a more consistent user interface across the application.
+
+## 🔧 Development
+
+The original version of FitWell was developed using **Kotlin, XML, and Firebase**. The project is now being rebuilt using **React Native and TypeScript**, with **Node.js, Express.js, and PostgreSQL** for the backend and database.
+
+The project structure and implementation are being updated as part of the redesign.
+
 ## 📌 Project Status
 
-**Current Status: 🚧 Under Development**
+**🚧 Redesign & Development**
 
-FitWell is currently being rebuilt using a new mobile development stack. The original implementation was developed using Kotlin, XML, and Firebase, but these technologies are planned to be removed as part of the project rework.
-
-Development is focused on rebuilding the application using **React Native and TypeScript**, along with a dedicated backend and database for improved application structure and future scalability.
+FitWell is currently being redesigned and rebuilt using a new technology stack. The application is still under development, with the updated interface and implementation currently in progress.
