@@ -6,7 +6,9 @@
 
 **⏸️ On Hold**
 
-The project is currently on hold while development efforts are focused on other ongoing projects. Work on FitWell will resume at a later time.
+The project is currently on hold while development efforts are focused on other ongoing projects. Work on the new version will resume at a later time.
+
+The original version was developed using **Kotlin, XML, and Firebase**. The planned new version will use **React Native, TypeScript, Node.js, Express.js, and PostgreSQL**, with a redesigned interface and updated application structure.
 
 ## ✨ Features
 
@@ -33,7 +35,7 @@ The project is currently on hold while development efforts are focused on other 
 
 ## 🎨 Design
 
-A redesigned interface is planned with emphasis on usability, consistency, and intuitive navigation.
+A redesigned interface is planned with a focus on usability, consistency, and intuitive navigation.
 
 Planned improvements include:
 
@@ -42,9 +44,4 @@ Planned improvements include:
 * Improved navigation
 * Refined visual design
 * Better organization of fitness features
-
-## 🔧 Development
-
-FitWell is being transitioned to **React Native, TypeScript, Node.js, Express.js, and PostgreSQL** as part of the planned redevelopment.
-
-Development will resume once the project is taken off hold.
+****
