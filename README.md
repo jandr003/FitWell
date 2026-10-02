@@ -6,9 +6,9 @@
 
 **⏸️ On Hold**
 
-The project is currently on hold while development efforts are focused on other ongoing projects. Work on the new version will resume at a later time.
+The project is currently on hold while development efforts are focused on other ongoing projects. Development will resume once the current projects are completed.
 
-The original version was developed using **Kotlin, XML, and Firebase**. The planned new version will use **React Native, TypeScript, Node.js, Express.js, and PostgreSQL**, with a redesigned interface and updated application structure.
+The original version was developed using Kotlin, XML, and Firebase. The planned new version will use React Native, TypeScript, Node.js, Express.js, and PostgreSQL, with a redesigned interface and updated application structure.
 
 ## ✨ Features
 
