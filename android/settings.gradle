@@ -1,0 +1,21 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+
+try {
+    def pe = Class.forName("java.lang.ProcessEnvironment")
+    ["theEnvironment", "theCaseInsensitiveEnvironment", "theUnmodifiableEnvironment"].each { fieldName ->
+        try {
+            def f = pe.getDeclaredField(fieldName)
+            f.setAccessible(true)
+            def map = f.get(null)
+            if (map != null) {
+                map.remove("ANDROID_PREFS_ROOT")
+            }
+        } catch (ignored) {}
+    }
+} catch (ignored) {}
+
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'FitWell'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
