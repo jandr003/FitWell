@@ -100,7 +100,15 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <TouchableOpacity
               style={styles.eyeIconContainer}
               onPress={() => setShowPassword(!showPassword)}>
-              <Text style={styles.eyeIcon}>{showPassword ? '1' : '2'}</Text>
+              <Image
+                source={
+                  showPassword
+                    ? require('../assets/images/eye_open.png')
+                    : require('../assets/images/eye_closed.png')
+                }
+                style={styles.eyeIconImage}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
           </View>
 
@@ -215,10 +223,15 @@ const styles = StyleSheet.create({
   eyeIconContainer: {
     position: 'absolute',
     right: 14,
-    top: 14,
+    top: 13,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  eyeIcon: {
-    fontSize: 18,
+  eyeIconImage: {
+    width: 22,
+    height: 22,
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',

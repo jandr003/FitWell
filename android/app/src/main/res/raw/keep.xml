@@ -1,1 +1,1 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/src_assets_images_workout_hero,@drawable/src_assets_images_bottom_gradient,@drawable/src_assets_images_dumbbell" />
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@drawable/src_assets_images_workout_hero,@drawable/src_assets_images_bottom_gradient,@drawable/src_assets_images_eye_open,@drawable/src_assets_images_eye_closed" />
