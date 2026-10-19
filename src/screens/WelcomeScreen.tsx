@@ -58,14 +58,17 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     });
   };
 
+  const isLoginOpenRef = useRef(isLoginOpen);
+  isLoginOpenRef.current = isLoginOpen;
+
   const panResponderRef = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dy) > 10;
+        return Math.abs(gestureState.dy) > 5;
       },
       onPanResponderMove: (_, gestureState) => {
-        if (!isLoginOpen) {
+        if (!isLoginOpenRef.current) {
           if (gestureState.dy < 0) {
             cardAnim.setValue(Math.max(0, CARD_REST_POSITION + gestureState.dy));
           }
@@ -76,8 +79,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         }
       },
       onPanResponderRelease: (_, gestureState) => {
-        if (!isLoginOpen) {
-          if (gestureState.dy < -70 || gestureState.vy < -0.5) {
+        if (!isLoginOpenRef.current) {
+          if (gestureState.dy < -50 || gestureState.vy < -0.3) {
             openLoginSheet();
           } else {
             Animated.spring(cardAnim, {
@@ -87,7 +90,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             }).start();
           }
         } else {
-          if (gestureState.dy > 80 || gestureState.vy > 0.5) {
+          if (gestureState.dy > 50 || gestureState.vy > 0.3) {
             closeLoginSheet();
           } else {
             Animated.spring(cardAnim, {
@@ -117,7 +120,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     <View style={styles.container} {...panResponderRef.current.panHandlers}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <View style={StyleSheet.absoluteFill}>
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
         <Image
           source={require('../assets/images/workout_hero.jpg')}
           style={styles.heroImage}
@@ -132,36 +135,32 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       </View>
 
       <View style={styles.topHeaderContainer}>
-        <Animated.View style={[styles.backButtonContainer, { opacity: welcomeHeaderOpacity, top: insets.top + 10 }]}>
-          <TouchableOpacity style={styles.backButton} onPress={closeLoginSheet}>
-            <Text style={styles.backArrow}>←</Text>
-          </TouchableOpacity>
-        </Animated.View>
-
         <View style={[styles.headerTextWrapper, { top: height * 0.62 }]}>
           <Animated.View style={[styles.welcomeTaglineBox, { opacity: taglineOpacity }]}>
             <Text style={styles.headingText}>Swipe Up to</Text>
+            <Text style={styles.headingText}>Begin Your</Text>
             <Text style={styles.headingText}>
-              your <Text style={styles.highlightText}>Fitness</Text>
+              <Text style={styles.highlightText}>Fitness</Text> Journey
             </Text>
-            <Text style={styles.headingText}>track.</Text>
           </Animated.View>
         </View>
 
-        <Animated.View style={[styles.greetingHeaderBox, { opacity: welcomeHeaderOpacity, top: insets.top + 60, left: 24 }]}>
-          <Text style={styles.greetingText}>Hello John,</Text>
-          <Text style={styles.welcomeTitleText}>Welcome Back!</Text>
+        <Animated.View style={[styles.greetingHeaderBox, { opacity: welcomeHeaderOpacity, top: insets.top + 30 }]}>
+          <Image
+            source={require('../assets/images/FITWELL_LOGO.png')}
+            style={styles.logoHeaderImage}
+            resizeMode="contain"
+          />
         </Animated.View>
 
-        <Animated.View style={[styles.chevronContainer, { opacity: taglineOpacity, bottom: insets.bottom + 20 }]}>
-          <TouchableOpacity activeOpacity={0.7} onPress={openLoginSheet}>
-            <Text style={styles.chevronArrow}>▲</Text>
-            <Text style={[styles.chevronArrow, { marginTop: -8 }]}>▲</Text>
-          </TouchableOpacity>
+        <Animated.View style={[styles.chevronContainer, { opacity: taglineOpacity, bottom: insets.bottom + 20 }]} pointerEvents="none">
+          <Text style={styles.chevronArrow}>▲</Text>
+          <Text style={[styles.chevronArrow, { marginTop: -8 }]}>▲</Text>
         </Animated.View>
       </View>
 
       <Animated.View
+        pointerEvents={isLoginOpen ? 'auto' : 'none'}
         style={[
           styles.slidingCard,
           {
@@ -179,8 +178,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
 
             <View style={styles.dragHandleBar} />
 
-            <Text style={styles.cardTitle}>Your Account</Text>
-            <Text style={styles.cardSubtitle}>Sign in to your account</Text>
+            <Text style={styles.cardTitle}>Let’s Get Moving</Text>
+            <Text style={styles.cardSubtitle}>Keep moving at your own pace</Text>
 
             <View style={styles.inputWrapper}>
               <TextInput
@@ -238,6 +237,24 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               </TouchableOpacity>
             </View>
 
+            <View style={styles.dividerContainer}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            <View style={styles.socialButtonsRow}>
+              <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
+                <Text style={styles.socialButtonText}>Google</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
+                <Text style={styles.socialButtonText}>Facebook</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
+                <Text style={styles.socialButtonText}>Fitbit</Text>
+              </TouchableOpacity>
+            </View>
+
           </ScrollView>
         </KeyboardAvoidingView>
       </Animated.View>
@@ -256,7 +273,7 @@ const styles = StyleSheet.create({
   },
   darkOverlayFull: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
   },
   gradientOverlay: {
     position: 'absolute',
@@ -304,6 +321,19 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  logoHeaderImage: {
+    width: 460,
+    height: 175,
+    resizeMode: 'contain',
+    tintColor: '#FFFFFF',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 10,
+    elevation: 10,
   },
   headingText: {
     fontSize: 34,
@@ -409,15 +439,16 @@ const styles = StyleSheet.create({
   eyeIconContainer: {
     position: 'absolute',
     right: 14,
-    top: 13,
-    width: 24,
-    height: 24,
+    top: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    width: 32,
   },
   eyeIconImage: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
+    tintColor: '#666666',
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',
@@ -429,7 +460,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   loginButton: {
-    backgroundColor: '#0A3B28',
+    backgroundColor: '#00FF9D',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -443,8 +474,8 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 19,
+    fontWeight: '800',
   },
   signUpRow: {
     flexDirection: 'row',
@@ -460,6 +491,48 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#0A3B28',
     fontWeight: '700',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 18,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  dividerText: {
+    color: '#888888',
+    fontSize: 11,
+    fontWeight: '600',
+    marginHorizontal: 10,
+    letterSpacing: 0.5,
+  },
+  socialButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  socialButton: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  socialButtonText: {
+    color: '#333333',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
 

@@ -73,8 +73,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
         </View>
 
         <View style={[styles.cardContainer, { paddingBottom: insets.bottom + 24 }]}>
-          <Text style={styles.cardTitle}>Your Account</Text>
-          <Text style={styles.cardSubtitle}>Sign in to your account</Text>
+          <Text style={styles.cardTitle}>Let’s Get Moving</Text>
+          <Text style={styles.cardSubtitle}>Keep moving at your own pace</Text>
 
           <View style={styles.inputWrapper}>
             <TextInput
@@ -129,6 +129,24 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
             <Text style={styles.noAccountText}>Don't have an account? </Text>
             <TouchableOpacity onPress={onSignUpPress}>
               <Text style={styles.signUpText}>Sign up</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.dividerContainer}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <View style={styles.socialButtonsRow}>
+            <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
+              <Text style={styles.socialButtonText}>Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
+              <Text style={styles.socialButtonText}>Facebook</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
+              <Text style={styles.socialButtonText}>Fitbit</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -223,15 +241,16 @@ const styles = StyleSheet.create({
   eyeIconContainer: {
     position: 'absolute',
     right: 14,
-    top: 13,
-    width: 24,
-    height: 24,
+    top: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    width: 32,
   },
   eyeIconImage: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
+    tintColor: '#666666',
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',
@@ -243,7 +262,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   loginButton: {
-    backgroundColor: '#0A3B28',
+    backgroundColor: '#00FF9D',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
@@ -257,8 +276,8 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
+    fontSize: 19,
+    fontWeight: '800',
   },
   signUpRow: {
     flexDirection: 'row',
@@ -274,6 +293,48 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#0A3B28',
     fontWeight: '700',
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 18,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  dividerText: {
+    color: '#888888',
+    fontSize: 11,
+    fontWeight: '600',
+    marginHorizontal: 10,
+    letterSpacing: 0.5,
+  },
+  socialButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  socialButton: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  socialButtonText: {
+    color: '#333333',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
 
