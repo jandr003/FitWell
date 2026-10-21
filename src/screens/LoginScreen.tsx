@@ -139,14 +139,26 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
           </View>
 
           <View style={styles.socialButtonsRow}>
-            <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
-              <Text style={styles.socialButtonText}>Google</Text>
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
+                source={require('../assets/images/GOOGLE.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
-              <Text style={styles.socialButtonText}>Facebook</Text>
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
+                source={require('../assets/images/FACEBOOK.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} activeOpacity={0.8}>
-              <Text style={styles.socialButtonText}>Fitbit</Text>
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
+                source={require('../assets/images/FITBIT.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -248,9 +260,8 @@ const styles = StyleSheet.create({
     width: 32,
   },
   eyeIconImage: {
-    width: 20,
-    height: 20,
-    tintColor: '#666666',
+    width: 22,
+    height: 22,
   },
   forgotPasswordContainer: {
     alignSelf: 'flex-end',
@@ -313,28 +324,29 @@ const styles = StyleSheet.create({
   },
   socialButtonsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+    marginTop: 6,
   },
-  socialButton: {
-    flex: 1,
+  socialCircleButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderColor: '#EAEAEA',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 1,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
   },
-  socialButtonText: {
-    color: '#333333',
-    fontSize: 13,
-    fontWeight: '600',
+  socialIcon: {
+    width: 28,
+    height: 28,
   },
 });
 
