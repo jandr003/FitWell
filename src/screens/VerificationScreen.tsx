@@ -12,6 +12,8 @@ import {
   ScrollView,
   Dimensions,
   Animated,
+  NativeModules,
+  PermissionsAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -36,16 +38,90 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const [otp, setOtp] = useState(['', '', '', '']);
   const [errorMessage, setErrorMessage] = useState('');
   const [showNotification, setShowNotification] = useState(true);
+  const [notifTimeDisplay, setNotifTimeDisplay] = useState('now');
+  const notifStartTimeRef = useRef<number>(Date.now());
 
-  const notifAnim = useRef(new Animated.Value(-100)).current;
+  const notifAnim = useRef(new Animated.Value(-120)).current;
+  const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
+  const triggerNotification = () => {
+    setShowNotification(true);
+    notifStartTimeRef.current = Date.now();
+    setNotifTimeDisplay('now');
+    notifAnim.setValue(-120);
+
     Animated.spring(notifAnim, {
       toValue: 0,
       useNativeDriver: true,
       friction: 6,
     }).start();
+
+    if (Platform.OS === 'android') {
+      const sendNativeNotif = () => {
+        if (NativeModules.NotificationModule) {
+          NativeModules.NotificationModule.requestNotificationPermission();
+          NativeModules.NotificationModule.sendNotification(
+            'FitWell Security',
+            `Your verification code is ${verificationCode}`
+          );
+        }
+      };
+
+      const androidApiLevel =
+        typeof Platform.Version === 'number'
+          ? Platform.Version
+          : parseInt(String(Platform.Version), 10);
+
+      if (androidApiLevel >= 33) {
+        PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS' as any)
+          .then(() => sendNativeNotif())
+          .catch(() => sendNativeNotif());
+      } else {
+        sendNativeNotif();
+      }
+    }
+
+    if (dismissTimerRef.current) {
+      clearTimeout(dismissTimerRef.current);
+    }
+
+    dismissTimerRef.current = setTimeout(() => {
+      Animated.timing(notifAnim, {
+        toValue: -140,
+        duration: 350,
+        useNativeDriver: true,
+      }).start(() => {
+        setShowNotification(false);
+      });
+    }, 4500);
+  };
+
+  useEffect(() => {
+    triggerNotification();
+    return () => {
+      if (dismissTimerRef.current) {
+        clearTimeout(dismissTimerRef.current);
+      }
+    };
   }, [verificationCode]);
+
+  useEffect(() => {
+    if (!showNotification) return;
+
+    const interval = setInterval(() => {
+      const elapsedSec = Math.floor((Date.now() - notifStartTimeRef.current) / 1000);
+      if (elapsedSec < 5) {
+        setNotifTimeDisplay('now');
+      } else if (elapsedSec < 60) {
+        setNotifTimeDisplay(`${elapsedSec}s ago`);
+      } else {
+        const elapsedMin = Math.floor(elapsedSec / 60);
+        setNotifTimeDisplay(`${elapsedMin}m ago`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [showNotification]);
 
   const inputRefs = [
     useRef<TextInput>(null),
@@ -88,6 +164,13 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     }
   };
 
+  const handleResend = () => {
+    triggerNotification();
+    if (onResendCode) {
+      onResendCode();
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -99,20 +182,39 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
           style={[
             styles.notifBanner,
             {
-              top: insets.top + 10,
+              top: insets.top + 8,
               transform: [{ translateY: notifAnim }],
             },
           ]}>
-          <View style={styles.notifHeaderRow}>
-            <Text style={styles.notifAppTitle}>🔔 FITWELL SECURITY</Text>
-            <TouchableOpacity onPress={() => setShowNotification(false)}>
-              <Text style={styles.notifCloseText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.notifBodyText}>
-            Your verification code is:{' '}
-            <Text style={styles.notifCodeText}>{verificationCode}</Text>
-          </Text>
+          <TouchableOpacity
+            activeOpacity={0.95}
+            style={styles.notifInner}
+            onPress={() => {
+              Animated.timing(notifAnim, {
+                toValue: -140,
+                duration: 250,
+                useNativeDriver: true,
+              }).start(() => setShowNotification(false));
+            }}>
+            <View style={styles.notifContentWrapper}>
+              <View style={styles.notifHeaderRow}>
+                <Image
+                  source={require('../assets/images/fitwell_logo_dash.png')}
+                  style={styles.notifHeaderLogo}
+                  resizeMode="contain"
+                />
+                <Text style={styles.notifTimeText}>{notifTimeDisplay}</Text>
+              </View>
+
+              <Text style={styles.notifMessageTitle}>
+                Your verification code is{' '}
+                <Text style={styles.notifCodeText}>{verificationCode}</Text>
+              </Text>
+              <Text style={styles.notifMessageSub}>
+                Enter the code below to continue.
+              </Text>
+            </View>
+          </TouchableOpacity>
         </Animated.View>
       )}
 
@@ -181,11 +283,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
 
           <View style={styles.resendRow}>
             <Text style={styles.resendNormalText}>Didn't receive a code? </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setShowNotification(true);
-                if (onResendCode) onResendCode();
-              }}>
+            <TouchableOpacity onPress={handleResend}>
               <Text style={styles.resendLinkText}>Resend code!</Text>
             </TouchableOpacity>
           </View>
@@ -218,47 +316,58 @@ const styles = StyleSheet.create({
   },
   notifBanner: {
     position: 'absolute',
-    left: 16,
-    right: 16,
-    zIndex: 999,
-    backgroundColor: '#1E2522',
-    borderWidth: 1,
-    borderColor: '#00FF9D',
-    borderRadius: 14,
-    padding: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    left: 14,
+    right: 14,
+    zIndex: 9999,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
     elevation: 10,
+    borderWidth: Platform.OS === 'ios' ? 0 : 0.5,
+    borderColor: '#E5E5EA',
+  },
+  notifInner: {
+    width: '100%',
+  },
+  notifContentWrapper: {
+    width: '100%',
   },
   notifHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
   },
-  notifAppTitle: {
-    color: '#00FF9D',
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 0.8,
+  notifHeaderLogo: {
+    width: 130,
+    height: 28,
+    marginLeft: -45,
+    backgroundColor: 'transparent',
   },
-  notifCloseText: {
-    color: '#CCCCCC',
-    fontSize: 14,
-    paddingHorizontal: 4,
-  },
-  notifBodyText: {
-    color: '#FFFFFF',
-    fontSize: 14,
+  notifTimeText: {
+    fontSize: 12,
+    color: '#409CFF',
     fontWeight: '500',
   },
+  notifMessageTitle: {
+    fontSize: 13.5,
+    color: '#1C1C1E',
+    fontWeight: '500',
+    lineHeight: 18,
+  },
   notifCodeText: {
-    color: '#00FF9D',
-    fontWeight: '900',
-    fontSize: 16,
-    letterSpacing: 2,
+    fontWeight: '800',
+    color: '#00D182',
+    fontSize: 15,
+  },
+  notifMessageSub: {
+    fontSize: 12,
+    color: '#666666',
+    marginTop: 1,
   },
   scrollContainer: {
     flexGrow: 1,

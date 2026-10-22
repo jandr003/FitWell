@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WelcomeScreen from './src/screens/WelcomeScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import SignUpScreen from './src/screens/SignUpScreen';
 import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import VerificationScreen from './src/screens/VerificationScreen';
 import CreateNewPasswordScreen from './src/screens/CreateNewPasswordScreen';
 
-type ScreenName = 'welcome' | 'forgot_password' | 'verification' | 'create_new_password';
+type ScreenName = 'welcome' | 'login' | 'signup' | 'forgot_password' | 'verification' | 'create_new_password';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenName>('welcome');
@@ -36,13 +38,36 @@ function App() {
     setCurrentScreen('welcome');
   };
 
+  const handleSignUpSubmit = (fullName: string, email: string) => {
+    setUserEmail(email);
+    generateNewCode();
+    setCurrentScreen('verification');
+  };
+
   return (
     <SafeAreaProvider>
       {currentScreen === 'welcome' && (
         <WelcomeScreen
           onLoginSubmit={(email, pass) => console.log('Login:', email, pass)}
-          onSignUpPress={() => console.log('Sign up pressed')}
+          onSignUpPress={() => setCurrentScreen('signup')}
           onForgotPasswordPress={handleStartForgotPassword}
+        />
+      )}
+
+      {currentScreen === 'login' && (
+        <LoginScreen
+          onBackToWelcome={() => setCurrentScreen('welcome')}
+          onSignUpPress={() => setCurrentScreen('signup')}
+          onForgotPasswordPress={handleStartForgotPassword}
+          onLoginPress={(email, pass) => console.log('Login:', email, pass)}
+        />
+      )}
+
+      {currentScreen === 'signup' && (
+        <SignUpScreen
+          onBackToWelcome={() => setCurrentScreen('welcome')}
+          onLoginPress={() => setCurrentScreen('login')}
+          onSignUpSubmit={handleSignUpSubmit}
         />
       )}
 

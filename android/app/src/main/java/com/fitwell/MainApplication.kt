@@ -10,13 +10,11 @@ import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 class MainApplication : Application(), ReactApplication {
 
   override val reactHost: ReactHost by lazy {
+    val pkgs = PackageList(this).packages.toMutableList()
+    pkgs.add(NotificationPackage())
     getDefaultReactHost(
       context = applicationContext,
-      packageList =
-        PackageList(this).packages.apply {
-          // Packages that cannot be autolinked yet can be added manually here, for example:
-          // add(MyReactNativePackage())
-        },
+      packageList = pkgs,
     )
   }
 
