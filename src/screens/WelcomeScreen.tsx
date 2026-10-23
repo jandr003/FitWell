@@ -121,17 +121,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Image
-          source={require('../assets/images/workout_hero.jpg')}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
         <View style={styles.darkOverlayFull} />
-        <Image
-          source={require('../assets/images/bottom_gradient.png')}
-          style={styles.gradientOverlay}
-          resizeMode="stretch"
-        />
       </View>
 
       <View style={styles.topHeaderContainer}>

@@ -47,11 +47,6 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Image
-          source={require('../assets/images/workout_dark_cinematic.jpg')}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
         <View style={styles.darkOverlayFull} />
       </View>
 
@@ -70,12 +65,6 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
               <Text style={styles.greetingText}>Forget Password</Text>
               <Text style={styles.welcomeTitleText}>Reset Account</Text>
             </View>
-
-            <Image
-              source={require('../assets/images/dumbbell.png')}
-              style={styles.headerDumbbell}
-              resizeMode="contain"
-            />
           </View>
         </View>
 

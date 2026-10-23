@@ -63,12 +63,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
               <Text style={styles.greetingText}>Hello John,</Text>
               <Text style={styles.welcomeTitleText}>Welcome Back!</Text>
             </View>
-
-            <Image
-              source={require('../assets/images/dumbbell.png')}
-              style={styles.headerDumbbell}
-              resizeMode="contain"
-            />
           </View>
         </View>
 

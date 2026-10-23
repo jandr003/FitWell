@@ -58,11 +58,6 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Image
-          source={require('../assets/images/workout_dark_cinematic.jpg')}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
         <View style={styles.darkOverlayFull} />
       </View>
 
@@ -83,12 +78,6 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
               <Text style={styles.greetingText}>Create New</Text>
               <Text style={styles.welcomeTitleText}>Password</Text>
             </View>
-
-            <Image
-              source={require('../assets/images/dumbbell.png')}
-              style={styles.headerDumbbell}
-              resizeMode="contain"
-            />
           </View>
         </View>
 

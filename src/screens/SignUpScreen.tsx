@@ -71,11 +71,6 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Image
-          source={require('../assets/images/workout_dark_cinematic.jpg')}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
         <View style={styles.darkOverlayFull} />
       </View>
 
@@ -96,12 +91,6 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
               <Text style={styles.greetingText}>Create Account</Text>
               <Text style={styles.welcomeTitleText}>Join FitWell</Text>
             </View>
-
-            <Image
-              source={require('../assets/images/dumbbell.png')}
-              style={styles.headerDumbbell}
-              resizeMode="contain"
-            />
           </View>
         </View>
 

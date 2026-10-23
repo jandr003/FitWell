@@ -219,11 +219,6 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       )}
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Image
-          source={require('../assets/images/workout_dark_cinematic.jpg')}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
         <View style={styles.darkOverlayFull} />
       </View>
 
@@ -244,12 +239,6 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
               <Text style={styles.greetingText}>Verification</Text>
               <Text style={styles.welcomeTitleText}>Enter Code</Text>
             </View>
-
-            <Image
-              source={require('../assets/images/dumbbell.png')}
-              style={styles.headerDumbbell}
-              resizeMode="contain"
-            />
           </View>
         </View>
 

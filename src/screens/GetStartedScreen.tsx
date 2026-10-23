@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,11 +7,43 @@ import {
   Image,
   StatusBar,
   ScrollView,
-  Dimensions,
+  Animated,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const { width } = Dimensions.get('window');
+const ROUNDED_FONT = Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-rounded';
+
+interface OnboardingStep {
+  id: 'train' | 'track' | 'improve';
+  title: string;
+  description: string;
+  buttonText: string;
+}
+
+const ONBOARDING_STEPS: OnboardingStep[] = [
+  {
+    id: 'train',
+    title: 'Build a stronger you.',
+    description:
+      'Discover workouts that suit your fitness level and goals. Start building a routine that works for you.',
+    buttonText: 'Next',
+  },
+  {
+    id: 'track',
+    title: 'See your progress.',
+    description:
+      "Keep track of your workouts, monitor your activity, and see how far you've come over time.",
+    buttonText: 'Next',
+  },
+  {
+    id: 'improve',
+    title: 'Become better every day.',
+    description:
+      'Build on your progress, stay consistent with your routine, and work toward reaching your fitness goals.',
+    buttonText: 'Get Started',
+  },
+];
 
 interface GetStartedScreenProps {
   onGetStartedPress?: () => void;
@@ -23,102 +55,202 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
   onLoginPress,
 }) => {
   const insets = useSafeAreaInsets();
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const stepAnim = useRef(new Animated.Value(0)).current;
+
+  const currentStep = ONBOARDING_STEPS[currentStepIndex];
+  const isLastStep = currentStepIndex === ONBOARDING_STEPS.length - 1;
+
+  const animateToStep = (newIndex: number) => {
+    if (newIndex === currentStepIndex) return;
+
+    const isForward = newIndex > currentStepIndex;
+    const enterStart = isForward ? 30 : -35;
+
+    slideAnim.setValue(enterStart);
+    fadeAnim.setValue(0.2);
+
+    setCurrentStepIndex(newIndex);
+
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.spring(slideAnim, {
+        toValue: 0,
+        friction: 8,
+        tension: 70,
+        useNativeDriver: true,
+      }),
+      Animated.spring(stepAnim, {
+        toValue: newIndex,
+        friction: 8,
+        tension: 70,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
+  const handleNextPress = () => {
+    if (isLastStep) {
+      if (onGetStartedPress) onGetStartedPress();
+    } else {
+      animateToStep(currentStepIndex + 1);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Image
+          source={require('../assets/images/Sweaty Blue-Lit Gym Athlete.png')}
+          style={styles.heroBgImage}
+          blurRadius={Platform.OS === 'ios' ? 8 : 4}
+          resizeMode="cover"
+        />
+        <View style={styles.darkGradientOverlay} />
+      </View>
+
       <ScrollView
         contentContainerStyle={[
           styles.scrollContainer,
-          { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 },
+          { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 20 },
         ]}
         showsVerticalScrollIndicator={false}
         bounces={false}>
 
-        {/* Top Branding Section */}
-        <View style={styles.topBrandingWrapper}>
-          <Image
-            source={require('../assets/images/fitwell_logo_dash.png')}
-            style={styles.brandLogo}
-            resizeMode="contain"
-          />
-          <Text style={styles.taglineText}>TRAIN  •  TRACK  •  IMPROVE</Text>
+        <View style={styles.topHeaderRow}>
+          <View style={styles.topBrandingWrapper}>
+            <Image
+              source={require('../assets/images/fitwell_logo_dash.png')}
+              style={styles.brandLogo}
+              tintColor="#00E5C0"
+              resizeMode="contain"
+            />
+
+            <View style={styles.taglineRow}>
+              <Text
+                style={[
+                  styles.taglineWord,
+                  currentStep.id === 'train'
+                    ? styles.activeTaglineWord
+                    : styles.inactiveTaglineWord,
+                ]}>
+                TRAIN
+              </Text>
+
+              <Text style={styles.taglineSpace}>   </Text>
+
+              <Text
+                style={[
+                  styles.taglineWord,
+                  currentStep.id === 'track'
+                    ? styles.activeTaglineWord
+                    : styles.inactiveTaglineWord,
+                ]}>
+                TRACK
+              </Text>
+
+              <Text style={styles.taglineSpace}>   </Text>
+
+              <Text
+                style={[
+                  styles.taglineWord,
+                  currentStep.id === 'improve'
+                    ? styles.activeTaglineWord
+                    : styles.inactiveTaglineWord,
+                ]}>
+                IMPROVE
+              </Text>
+            </View>
+          </View>
+
+          {!isLastStep && (
+            <TouchableOpacity style={styles.skipButton} onPress={onGetStartedPress}>
+              <Text style={styles.skipText}>Skip</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        {/* Main Content Area */}
         <View style={styles.mainBodyContent}>
-          {/* Headline */}
-          <Text style={styles.headlineTitle}>
-            Build a{'\n'}
-            <Text style={styles.highlightText}>stronger </Text>
-            you.
-          </Text>
 
-          {/* Subtitle / Description */}
-          <Text style={styles.descriptionText}>
-            Your fitness journey starts here.{'\n'}
-            Train at your pace, track your progress,{'\n'}
-            and work toward your goals.
-          </Text>
+          <Animated.View
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateX: slideAnim }],
+            }}>
+            <Text style={styles.headlineTitle}>
+              {currentStep.id === 'train' ? (
+                <>
+                  Build a{'\n'}
+                  <Text style={styles.highlightText}>stronger </Text>
+                  you.
+                </>
+              ) : currentStep.id === 'track' ? (
+                <>
+                  See your{'\n'}
+                  <Text style={styles.highlightText}>progress</Text>.
+                </>
+              ) : (
+                <>
+                  Become{'\n'}
+                  <Text style={styles.highlightText}>better </Text>
+                  every day.
+                </>
+              )}
+            </Text>
 
-          {/* 3 Feature Cards (No Emoji Stickers) */}
-          <View style={styles.featureCardsRow}>
-            {/* Workouts Card */}
-            <View style={styles.featureCard}>
-              <View style={styles.iconCircle}>
-                <View style={styles.dumbbellWrapper}>
-                  <View style={styles.dbPlate} />
-                  <View style={styles.dbBar} />
-                  <View style={styles.dbPlate} />
-                </View>
-              </View>
-              <Text style={styles.featureTitle}>Workouts</Text>
-              <Text style={styles.featureSubtitle}>Personalized for you</Text>
-            </View>
+            <Text style={styles.descriptionText}>{currentStep.description}</Text>
+          </Animated.View>
 
-            {/* Progress Card */}
-            <View style={styles.featureCard}>
-              <View style={styles.iconCircle}>
-                <View style={styles.chartWrapper}>
-                  <View style={[styles.chartBar, { height: 8 }]} />
-                  <View style={[styles.chartBar, { height: 14 }]} />
-                  <View style={[styles.chartBar, { height: 20 }]} />
-                </View>
-              </View>
-              <Text style={styles.featureTitle}>Progress</Text>
-              <Text style={styles.featureSubtitle}>See your growth</Text>
-            </View>
-
-            {/* Health Card */}
-            <View style={styles.featureCard}>
-              <View style={styles.iconCircle}>
-                <View style={styles.pulseWrapper}>
-                  <View style={styles.pulseLineHoriz} />
-                  <View style={styles.pulseLineVert} />
-                </View>
-              </View>
-              <Text style={styles.featureTitle}>Health</Text>
-              <Text style={styles.featureSubtitle}>A better you, every day</Text>
-            </View>
-          </View>
-
-          {/* Primary Action Button */}
           <TouchableOpacity
-            style={styles.getStartedButton}
+            style={styles.actionButton}
             activeOpacity={0.85}
-            onPress={onGetStartedPress}>
-            <Text style={styles.getStartedButtonText}>Get Started  →</Text>
+            onPress={handleNextPress}>
+            <Text style={styles.actionButtonText}>{currentStep.buttonText}</Text>
           </TouchableOpacity>
 
-          {/* Dots Indicator */}
           <View style={styles.dotsIndicatorRow}>
-            <View style={[styles.dot, styles.activeDot]} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
+            {ONBOARDING_STEPS.map((_, idx) => {
+              const dotWidth = stepAnim.interpolate({
+                inputRange: [idx - 1, idx, idx + 1],
+                outputRange: [8, 24, 8],
+                extrapolate: 'clamp',
+              });
+
+              const dotOpacity = stepAnim.interpolate({
+                inputRange: [idx - 1, idx, idx + 1],
+                outputRange: [0.3, 1, 0.3],
+                extrapolate: 'clamp',
+              });
+
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  activeOpacity={0.7}
+                  onPress={() => animateToStep(idx)}>
+                  <Animated.View
+                    style={[
+                      styles.dot,
+                      {
+                        width: dotWidth,
+                        opacity: dotOpacity,
+                        backgroundColor: '#00E5C0',
+                      },
+                    ]}
+                  />
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
-          {/* Bottom Login Link */}
           <View style={styles.loginRow}>
             <Text style={styles.alreadyText}>Already have an account? </Text>
             <TouchableOpacity onPress={onLoginPress}>
@@ -138,177 +270,133 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#060B0E',
   },
+  heroBgImage: {
+    width: '100%',
+    height: '100%',
+  },
+  darkGradientOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(6, 11, 14, 0.55)',
+  },
   scrollContainer: {
     paddingHorizontal: 22,
     flexGrow: 1,
     justifyContent: 'space-between',
   },
+  topHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+  },
   topBrandingWrapper: {
     alignItems: 'flex-start',
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   brandLogo: {
-    width: 150,
-    height: 38,
-    marginLeft: -48,
+    width: 270,
+    height: 68,
+    marginLeft: -86,
     backgroundColor: 'transparent',
+    tintColor: '#00E5C0',
   },
-  taglineText: {
-    fontSize: 10,
-    fontWeight: '800',
+  taglineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  taglineWord: {
+    fontSize: 12,
+    letterSpacing: 2.2,
+    fontFamily: ROUNDED_FONT,
+  },
+  activeTaglineWord: {
     color: '#00E5C0',
-    letterSpacing: 2,
-    marginTop: -4,
+    fontWeight: '900',
+    textShadowColor: '#00E5C0',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
+  },
+  inactiveTaglineWord: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  taglineSpace: {
+    fontSize: 12,
+  },
+  skipButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  skipText: {
+    color: '#E2E8F0',
+    fontSize: 13,
+    fontWeight: '700',
+    fontFamily: ROUNDED_FONT,
   },
   mainBodyContent: {
     width: '100%',
     marginTop: 'auto',
   },
   headlineTitle: {
-    fontSize: 34,
+    fontSize: 36,
     fontWeight: '900',
     color: '#FFFFFF',
-    lineHeight: 42,
-    marginBottom: 10,
+    lineHeight: 44,
+    marginBottom: 12,
     letterSpacing: -0.5,
+    fontFamily: ROUNDED_FONT,
   },
   highlightText: {
     color: '#00E5C0',
+    fontFamily: ROUNDED_FONT,
   },
   descriptionText: {
-    fontSize: 13.5,
-    color: '#94A3B8',
-    lineHeight: 20,
-    marginBottom: 24,
+    fontSize: 14,
+    color: '#D1D5DB',
+    lineHeight: 22,
+    marginBottom: 36,
+    fontFamily: ROUNDED_FONT,
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
-  featureCardsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 28,
-    gap: 8,
-  },
-  featureCard: {
-    flex: 1,
-    backgroundColor: 'rgba(15, 23, 30, 0.82)',
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-  },
-  iconCircle: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: 'rgba(0, 229, 192, 0.12)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-
-  /* Vector Icons (No Emoji Stickers) */
-  dumbbellWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  dbPlate: {
-    width: 4,
-    height: 14,
-    backgroundColor: '#00E5C0',
-    borderRadius: 1.5,
-  },
-  dbBar: {
-    width: 12,
-    height: 3,
-    backgroundColor: '#00E5C0',
-  },
-
-  chartWrapper: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    gap: 3,
-  },
-  chartBar: {
-    width: 4,
-    backgroundColor: '#00E5C0',
-    borderRadius: 1,
-  },
-
-  pulseWrapper: {
-    width: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  pulseLineHoriz: {
-    width: 16,
-    height: 3,
-    backgroundColor: '#00E5C0',
-    borderRadius: 1.5,
-  },
-  pulseLineVert: {
-    width: 3,
-    height: 16,
-    backgroundColor: '#00E5C0',
-    borderRadius: 1.5,
-    position: 'absolute',
-  },
-
-  featureTitle: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 3,
-  },
-  featureSubtitle: {
-    fontSize: 9.5,
-    color: '#94A3B8',
-    textAlign: 'center',
-    lineHeight: 12,
-  },
-  getStartedButton: {
+  actionButton: {
     width: '100%',
     backgroundColor: '#00E5C0',
     borderRadius: 24,
-    paddingVertical: 16,
+    paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
     elevation: 4,
     shadowColor: '#00E5C0',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
-  getStartedButtonText: {
+  actionButtonText: {
     color: '#060B0E',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '900',
     letterSpacing: 0.5,
+    fontFamily: ROUNDED_FONT,
   },
   dotsIndicatorRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 8,
-    marginBottom: 18,
+    marginBottom: 20,
   },
   dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-  },
-  activeDot: {
-    width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#00E5C0',
   },
   loginRow: {
     flexDirection: 'row',
@@ -317,13 +405,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   alreadyText: {
-    fontSize: 13,
-    color: '#94A3B8',
+    fontSize: 13.5,
+    color: '#D1D5DB',
+    fontFamily: ROUNDED_FONT,
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   loginText: {
-    fontSize: 13,
+    fontSize: 13.5,
     color: '#00E5C0',
     fontWeight: '800',
+    fontFamily: ROUNDED_FONT,
   },
 });
 
