@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import GetStartedScreen from './src/screens/GetStartedScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
@@ -7,10 +8,10 @@ import ForgotPasswordScreen from './src/screens/ForgotPasswordScreen';
 import VerificationScreen from './src/screens/VerificationScreen';
 import CreateNewPasswordScreen from './src/screens/CreateNewPasswordScreen';
 
-type ScreenName = 'welcome' | 'login' | 'signup' | 'forgot_password' | 'verification' | 'create_new_password';
+type ScreenName = 'get_started' | 'welcome' | 'login' | 'signup' | 'forgot_password' | 'verification' | 'create_new_password';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<ScreenName>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<ScreenName>('get_started');
   const [userEmail, setUserEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('5433');
 
@@ -35,7 +36,7 @@ function App() {
   };
 
   const handlePasswordResetComplete = () => {
-    setCurrentScreen('welcome');
+    setCurrentScreen('login');
   };
 
   const handleSignUpSubmit = (fullName: string, email: string) => {
@@ -46,6 +47,13 @@ function App() {
 
   return (
     <SafeAreaProvider>
+      {currentScreen === 'get_started' && (
+        <GetStartedScreen
+          onGetStartedPress={() => setCurrentScreen('welcome')}
+          onLoginPress={() => setCurrentScreen('login')}
+        />
+      )}
+
       {currentScreen === 'welcome' && (
         <WelcomeScreen
           onLoginSubmit={(email, pass) => console.log('Login:', email, pass)}
@@ -73,7 +81,7 @@ function App() {
 
       {currentScreen === 'forgot_password' && (
         <ForgotPasswordScreen
-          onBackToLogin={() => setCurrentScreen('welcome')}
+          onBackToLogin={() => setCurrentScreen('login')}
           onContinue={handleForgotPasswordEmailSubmit}
         />
       )}
