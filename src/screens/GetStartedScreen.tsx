@@ -12,13 +12,14 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ROUNDED_FONT = Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-rounded';
+const ROUNDED_FONT = 'vaga_round';
 
 interface OnboardingStep {
   id: 'train' | 'track' | 'improve';
   title: string;
   description: string;
   buttonText: string;
+  bgImage: any;
 }
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
@@ -28,6 +29,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     description:
       'Discover workouts that suit your fitness level and goals. Start building a routine that works for you.',
     buttonText: 'Next',
+    bgImage: require('../assets/images/Sweaty Blue-Lit Gym Athlete.png'),
   },
   {
     id: 'track',
@@ -35,6 +37,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     description:
       "Keep track of your workouts, monitor your activity, and see how far you've come over time.",
     buttonText: 'Next',
+    bgImage: require('../assets/images/onboarding_track_portrait.jpg'),
   },
   {
     id: 'improve',
@@ -42,6 +45,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     description:
       'Build on your progress, stay consistent with your routine, and work toward reaching your fitness goals.',
     buttonText: 'Get Started',
+    bgImage: require('../assets/images/onboarding_improve_portrait.jpg'),
   },
 ];
 
@@ -60,6 +64,7 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const stepAnim = useRef(new Animated.Value(0)).current;
+  const bgFadeAnim = useRef(new Animated.Value(1)).current;
 
   const currentStep = ONBOARDING_STEPS[currentStepIndex];
   const isLastStep = currentStepIndex === ONBOARDING_STEPS.length - 1;
@@ -72,6 +77,7 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
 
     slideAnim.setValue(enterStart);
     fadeAnim.setValue(0.2);
+    bgFadeAnim.setValue(0.25);
 
     setCurrentStepIndex(newIndex);
 
@@ -79,6 +85,11 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 220,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bgFadeAnim, {
+        toValue: 1,
+        duration: 320,
         useNativeDriver: true,
       }),
       Animated.spring(slideAnim, {
@@ -109,9 +120,9 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <Image
-          source={require('../assets/images/Sweaty Blue-Lit Gym Athlete.png')}
-          style={styles.heroBgImage}
+        <Animated.Image
+          source={currentStep.bgImage}
+          style={[styles.heroBgImage, { opacity: bgFadeAnim }]}
           blurRadius={Platform.OS === 'ios' ? 8 : 4}
           resizeMode="cover"
         />
@@ -272,7 +283,8 @@ const styles = StyleSheet.create({
   },
   heroBgImage: {
     width: '100%',
-    height: '100%',
+    height: '112%',
+    top: '-6%',
   },
   darkGradientOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -313,14 +325,12 @@ const styles = StyleSheet.create({
   },
   activeTaglineWord: {
     color: '#00E5C0',
-    fontWeight: '900',
     textShadowColor: '#00E5C0',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
   },
   inactiveTaglineWord: {
     color: '#FFFFFF',
-    fontWeight: '800',
   },
   taglineSpace: {
     fontSize: 12,
@@ -336,7 +346,6 @@ const styles = StyleSheet.create({
   skipText: {
     color: '#E2E8F0',
     fontSize: 13,
-    fontWeight: '700',
     fontFamily: ROUNDED_FONT,
   },
   mainBodyContent: {
@@ -345,7 +354,6 @@ const styles = StyleSheet.create({
   },
   headlineTitle: {
     fontSize: 36,
-    fontWeight: '900',
     color: '#FFFFFF',
     lineHeight: 44,
     marginBottom: 12,
@@ -383,7 +391,6 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#060B0E',
     fontSize: 17,
-    fontWeight: '900',
     letterSpacing: 0.5,
     fontFamily: ROUNDED_FONT,
   },
@@ -415,7 +422,6 @@ const styles = StyleSheet.create({
   loginText: {
     fontSize: 13.5,
     color: '#00E5C0',
-    fontWeight: '800',
     fontFamily: ROUNDED_FONT,
   },
 });

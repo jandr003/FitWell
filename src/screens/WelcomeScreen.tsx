@@ -16,6 +16,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const ROUNDED_FONT = 'vaga_round';
 const { width, height } = Dimensions.get('window');
 const CARD_HEIGHT = height * 0.58;
 const CARD_REST_POSITION = height;
@@ -269,43 +270,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#0B0E0D',
   },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
   darkOverlayFull: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.78)',
   },
-  gradientOverlay: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: '65%',
-    width: '100%',
-  },
   topHeaderContainer: {
     flex: 1,
     position: 'relative',
-  },
-  backButtonContainer: {
-    position: 'absolute',
-    left: 20,
-    zIndex: 20,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-  },
-  backArrow: {
-    color: '#FFFFFF',
-    fontSize: 26,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
   },
   headerTextWrapper: {
     position: 'absolute',
@@ -339,35 +310,34 @@ const styles = StyleSheet.create({
   },
   headingText: {
     fontSize: 34,
-    fontWeight: '800',
     color: '#FFFFFF',
     lineHeight: 44,
     letterSpacing: -0.5,
+    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.9)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
   },
   highlightText: {
     color: '#00FF9D',
-    fontStyle: 'italic',
-    fontWeight: '900',
+    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.9)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
   },
   greetingText: {
     fontSize: 26,
-    fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 4,
+    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.9)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
   },
   welcomeTitleText: {
     fontSize: 28,
-    fontWeight: '800',
     color: '#FFFFFF',
+    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.9)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
@@ -382,7 +352,7 @@ const styles = StyleSheet.create({
   chevronArrow: {
     color: '#00FF9D',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.9)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 6,
@@ -415,14 +385,15 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 26,
-    fontWeight: '800',
     color: '#0A3323',
     marginBottom: 4,
+    fontFamily: ROUNDED_FONT,
   },
   cardSubtitle: {
     fontSize: 14,
     color: '#666666',
     marginBottom: 24,
+    fontFamily: ROUNDED_FONT,
   },
   inputWrapper: {
     position: 'relative',
@@ -437,6 +408,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 15,
     color: '#333333',
+    fontFamily: ROUNDED_FONT,
   },
   eyeIconContainer: {
     position: 'absolute',
@@ -458,7 +430,7 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     fontSize: 13,
     color: '#666666',
-    fontWeight: '500',
+    fontFamily: ROUNDED_FONT,
   },
   loginButton: {
     backgroundColor: '#00FF9D',
@@ -476,7 +448,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 19,
-    fontWeight: '800',
+    fontFamily: ROUNDED_FONT,
   },
   signUpRow: {
     flexDirection: 'row',
@@ -487,11 +459,12 @@ const styles = StyleSheet.create({
   noAccountText: {
     fontSize: 14,
     color: '#666666',
+    fontFamily: ROUNDED_FONT,
   },
   signUpText: {
     fontSize: 14,
     color: '#0A3B28',
-    fontWeight: '700',
+    fontFamily: ROUNDED_FONT,
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -506,9 +479,9 @@ const styles = StyleSheet.create({
   dividerText: {
     color: '#888888',
     fontSize: 11,
-    fontWeight: '600',
     marginHorizontal: 10,
     letterSpacing: 0.5,
+    fontFamily: ROUNDED_FONT,
   },
   socialButtonsRow: {
     flexDirection: 'row',

@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const ROUNDED_FONT = 'vaga_round';
 const { width } = Dimensions.get('window');
 
 interface CreateNewPasswordScreenProps {
@@ -213,6 +214,7 @@ const styles = StyleSheet.create({
   backArrow: {
     color: '#FFFFFF',
     fontSize: 24,
+    fontFamily: ROUNDED_FONT,
   },
   headerRow: {
     flexDirection: 'row',
@@ -226,14 +228,14 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 26,
-    fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 4,
+    fontFamily: ROUNDED_FONT,
   },
   welcomeTitleText: {
     fontSize: 28,
-    fontWeight: '800',
     color: '#FFFFFF',
+    fontFamily: ROUNDED_FONT,
   },
   headerDumbbell: {
     width: width * 0.35,
@@ -249,15 +251,16 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 26,
-    fontWeight: '800',
     color: '#0A3323',
     marginBottom: 6,
+    fontFamily: ROUNDED_FONT,
   },
   cardSubtitle: {
     fontSize: 14,
     color: '#666666',
     lineHeight: 20,
     marginBottom: 24,
+    fontFamily: ROUNDED_FONT,
   },
   cardSubtitleCenter: {
     fontSize: 14,
@@ -265,12 +268,13 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 28,
     textAlign: 'center',
+    fontFamily: ROUNDED_FONT,
   },
   inputLabel: {
     fontSize: 13,
-    fontWeight: '600',
     color: '#333333',
     marginBottom: 8,
+    fontFamily: ROUNDED_FONT,
   },
   inputWrapper: {
     position: 'relative',
@@ -283,6 +287,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 15,
     color: '#333333',
+    fontFamily: ROUNDED_FONT,
   },
   eyeIconContainer: {
     position: 'absolute',
@@ -301,6 +306,7 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     fontSize: 13,
     marginBottom: 16,
+    fontFamily: ROUNDED_FONT,
   },
   actionButton: {
     width: '100%',
@@ -319,8 +325,8 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: '800',
     letterSpacing: 0.5,
+    fontFamily: ROUNDED_FONT,
   },
   successContainer: {
     alignItems: 'center',
@@ -339,7 +345,7 @@ const styles = StyleSheet.create({
   successBadgeText: {
     color: '#FFFFFF',
     fontSize: 32,
-    fontWeight: 'bold',
+    fontFamily: ROUNDED_FONT,
   },
 });
 

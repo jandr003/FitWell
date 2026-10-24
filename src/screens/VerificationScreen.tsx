@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const ROUNDED_FONT = 'vaga_round';
 const { width } = Dimensions.get('window');
 
 interface VerificationScreenProps {
@@ -340,23 +341,24 @@ const styles = StyleSheet.create({
   notifTimeText: {
     fontSize: 12,
     color: '#409CFF',
-    fontWeight: '500',
+    fontFamily: ROUNDED_FONT,
   },
   notifMessageTitle: {
     fontSize: 13.5,
     color: '#1C1C1E',
-    fontWeight: '500',
     lineHeight: 18,
+    fontFamily: ROUNDED_FONT,
   },
   notifCodeText: {
-    fontWeight: '800',
     color: '#00D182',
     fontSize: 15,
+    fontFamily: ROUNDED_FONT,
   },
   notifMessageSub: {
     fontSize: 12,
     color: '#666666',
     marginTop: 1,
+    fontFamily: ROUNDED_FONT,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -376,6 +378,7 @@ const styles = StyleSheet.create({
   backArrow: {
     color: '#FFFFFF',
     fontSize: 24,
+    fontFamily: ROUNDED_FONT,
   },
   headerRow: {
     flexDirection: 'row',
@@ -389,14 +392,14 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 26,
-    fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 4,
+    fontFamily: ROUNDED_FONT,
   },
   welcomeTitleText: {
     fontSize: 28,
-    fontWeight: '800',
     color: '#FFFFFF',
+    fontFamily: ROUNDED_FONT,
   },
   headerDumbbell: {
     width: width * 0.35,
@@ -412,25 +415,26 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 26,
-    fontWeight: '800',
     color: '#0A3323',
     marginBottom: 6,
+    fontFamily: ROUNDED_FONT,
   },
   cardSubtitle: {
     fontSize: 14,
     color: '#666666',
     lineHeight: 20,
     marginBottom: 24,
+    fontFamily: ROUNDED_FONT,
   },
   boldText: {
-    fontWeight: '700',
     color: '#0A3323',
+    fontFamily: ROUNDED_FONT,
   },
   inputLabel: {
     fontSize: 13,
-    fontWeight: '600',
     color: '#333333',
     marginBottom: 8,
+    fontFamily: ROUNDED_FONT,
   },
   otpRow: {
     flexDirection: 'row',
@@ -447,13 +451,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     textAlign: 'center',
     fontSize: 22,
-    fontWeight: '800',
     color: '#0A3323',
+    fontFamily: ROUNDED_FONT,
   },
   errorText: {
     color: '#FF3B30',
     fontSize: 13,
     marginBottom: 12,
+    fontFamily: ROUNDED_FONT,
   },
   resendRow: {
     flexDirection: 'row',
@@ -465,11 +470,12 @@ const styles = StyleSheet.create({
   resendNormalText: {
     fontSize: 13,
     color: '#666666',
+    fontFamily: ROUNDED_FONT,
   },
   resendLinkText: {
     fontSize: 13,
     color: '#00FF9D',
-    fontWeight: '700',
+    fontFamily: ROUNDED_FONT,
   },
   actionButton: {
     width: '100%',
@@ -488,8 +494,8 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: '800',
     letterSpacing: 0.5,
+    fontFamily: ROUNDED_FONT,
   },
 });
 

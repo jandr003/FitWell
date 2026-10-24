@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+const ROUNDED_FONT = 'vaga_round';
 const { width } = Dimensions.get('window');
 
 interface LoginScreenProps {
@@ -185,6 +186,7 @@ const styles = StyleSheet.create({
   backArrow: {
     color: '#FFFFFF',
     fontSize: 24,
+    fontFamily: ROUNDED_FONT,
   },
   headerRow: {
     flexDirection: 'row',
@@ -198,14 +200,14 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 26,
-    fontWeight: '700',
     color: '#FFFFFF',
     marginBottom: 4,
+    fontFamily: ROUNDED_FONT,
   },
   welcomeTitleText: {
     fontSize: 28,
-    fontWeight: '800',
     color: '#FFFFFF',
+    fontFamily: ROUNDED_FONT,
   },
   headerDumbbell: {
     width: width * 0.38,
@@ -221,14 +223,15 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 26,
-    fontWeight: '800',
     color: '#0A3323',
     marginBottom: 6,
+    fontFamily: ROUNDED_FONT,
   },
   cardSubtitle: {
     fontSize: 14,
     color: '#666666',
     marginBottom: 28,
+    fontFamily: ROUNDED_FONT,
   },
   inputWrapper: {
     position: 'relative',
@@ -243,6 +246,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 15,
     color: '#333333',
+    fontFamily: ROUNDED_FONT,
   },
   eyeIconContainer: {
     position: 'absolute',
@@ -264,7 +268,7 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     fontSize: 13,
     color: '#666666',
-    fontWeight: '500',
+    fontFamily: ROUNDED_FONT,
   },
   loginButton: {
     backgroundColor: '#00FF9D',
@@ -282,7 +286,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 19,
-    fontWeight: '800',
+    fontFamily: ROUNDED_FONT,
   },
   signUpRow: {
     flexDirection: 'row',
@@ -293,11 +297,12 @@ const styles = StyleSheet.create({
   noAccountText: {
     fontSize: 14,
     color: '#666666',
+    fontFamily: ROUNDED_FONT,
   },
   signUpText: {
     fontSize: 14,
     color: '#0A3B28',
-    fontWeight: '700',
+    fontFamily: ROUNDED_FONT,
   },
   dividerContainer: {
     flexDirection: 'row',
@@ -312,9 +317,9 @@ const styles = StyleSheet.create({
   dividerText: {
     color: '#888888',
     fontSize: 11,
-    fontWeight: '600',
     marginHorizontal: 10,
     letterSpacing: 0.5,
+    fontFamily: ROUNDED_FONT,
   },
   socialButtonsRow: {
     flexDirection: 'row',
