@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
-  Animated,
-  PanResponder,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -17,9 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ROUNDED_FONT = 'vaga_round';
-const { width, height } = Dimensions.get('window');
-const CARD_HEIGHT = height * 0.58;
-const CARD_REST_POSITION = height;
+const { width } = Dimensions.get('window');
 
 interface WelcomeScreenProps {
   onLoginSubmit?: (email: string, pass: string) => void;
@@ -33,360 +29,168 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onForgotPasswordPress,
 }) => {
   const insets = useSafeAreaInsets();
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const cardAnim = useRef(new Animated.Value(CARD_REST_POSITION)).current;
-
-  const openLoginSheet = () => {
-    setIsLoginOpen(true);
-    Animated.timing(cardAnim, {
-      toValue: 0,
-      duration: 320,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const closeLoginSheet = () => {
-    Animated.timing(cardAnim, {
-      toValue: CARD_REST_POSITION,
-      duration: 280,
-      useNativeDriver: true,
-    }).start(() => {
-      setIsLoginOpen(false);
-    });
-  };
-
-  const isLoginOpenRef = useRef(isLoginOpen);
-  isLoginOpenRef.current = isLoginOpen;
-
-  const panResponderRef = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        return Math.abs(gestureState.dy) > 5;
-      },
-      onPanResponderMove: (_, gestureState) => {
-        if (!isLoginOpenRef.current) {
-          if (gestureState.dy < 0) {
-            cardAnim.setValue(Math.max(0, CARD_REST_POSITION + gestureState.dy));
-          }
-        } else {
-          if (gestureState.dy > 0) {
-            cardAnim.setValue(Math.min(CARD_REST_POSITION, gestureState.dy));
-          }
-        }
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (!isLoginOpenRef.current) {
-          if (gestureState.dy < -50 || gestureState.vy < -0.3) {
-            openLoginSheet();
-          } else {
-            Animated.spring(cardAnim, {
-              toValue: CARD_REST_POSITION,
-              friction: 6,
-              useNativeDriver: true,
-            }).start();
-          }
-        } else {
-          if (gestureState.dy > 50 || gestureState.vy > 0.3) {
-            closeLoginSheet();
-          } else {
-            Animated.spring(cardAnim, {
-              toValue: 0,
-              friction: 6,
-              useNativeDriver: true,
-            }).start();
-          }
-        }
-      },
-    })
-  );
-
-  const taglineOpacity = cardAnim.interpolate({
-    inputRange: [0, CARD_REST_POSITION * 0.4, CARD_REST_POSITION],
-    outputRange: [0, 0.3, 1],
-    extrapolate: 'clamp',
-  });
-
-  const welcomeHeaderOpacity = cardAnim.interpolate({
-    inputRange: [0, CARD_REST_POSITION * 0.6, CARD_REST_POSITION],
-    outputRange: [1, 0.2, 0],
-    extrapolate: 'clamp',
-  });
-
   return (
-    <View style={styles.container} {...panResponderRef.current.panHandlers}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
         <View style={styles.darkOverlayFull} />
       </View>
 
-      <View style={styles.topHeaderContainer}>
-        <View style={[styles.headerTextWrapper, { top: height * 0.62 }]}>
-          <Animated.View style={[styles.welcomeTaglineBox, { opacity: taglineOpacity }]}>
-            <Text style={styles.headingText}>Swipe Up to</Text>
-            <Text style={styles.headingText}>Begin Your</Text>
-            <Text style={styles.headingText}>
-              <Text style={styles.highlightText}>Fitness</Text> Journey
-            </Text>
-          </Animated.View>
-        </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}>
 
-        <Animated.View style={[styles.greetingHeaderBox, { opacity: welcomeHeaderOpacity, top: insets.top + 30 }]}>
+        {/* Top Header Logo Section */}
+        <View style={[styles.topHeaderContainer, { paddingTop: insets.top + 16 }]}>
           <Image
-            source={require('../assets/images/FITWELL_LOGO.png')}
+            source={require('../assets/images/fitwell_logo_dash.png')}
             style={styles.logoHeaderImage}
+            tintColor="#00E5C0"
             resizeMode="contain"
           />
-        </Animated.View>
+        </View>
 
-        <Animated.View style={[styles.chevronContainer, { opacity: taglineOpacity, bottom: insets.bottom + 20 }]} pointerEvents="none">
-          <Text style={styles.chevronArrow}>▲</Text>
-          <Text style={[styles.chevronArrow, { marginTop: -8 }]}>▲</Text>
-        </Animated.View>
-      </View>
+        {/* Main Direct Auth Card Container */}
+        <View style={[styles.cardContainer, { paddingBottom: insets.bottom + 24 }]}>
+          <Text style={styles.cardTitle}>Let’s Get Moving</Text>
+          <Text style={styles.cardSubtitle}>Keep moving at your own pace</Text>
 
-      <Animated.View
-        pointerEvents={isLoginOpen ? 'auto' : 'none'}
-        style={[
-          styles.slidingCard,
-          {
-            height: CARD_HEIGHT + 40,
-            transform: [{ translateY: cardAnim }],
-          },
-        ]}>
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <ScrollView
-            contentContainerStyle={[styles.cardScrollContent, { paddingBottom: insets.bottom + 24 }]}
-            keyboardShouldPersistTaps="handled"
-            bounces={false}>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter Email"
+              placeholderTextColor="#999999"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
 
-            <View style={styles.dragHandleBar} />
-
-            <Text style={styles.cardTitle}>Let’s Get Moving</Text>
-            <Text style={styles.cardSubtitle}>Keep moving at your own pace</Text>
-
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Email"
-                placeholderTextColor="#999999"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </View>
-
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={[styles.input, { paddingRight: 45 }]}
-                placeholder="Enter Password"
-                placeholderTextColor="#999999"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-              />
-              <TouchableOpacity
-                style={styles.eyeIconContainer}
-                onPress={() => setShowPassword(!showPassword)}>
-                <Image
-                  source={
-                    showPassword
-                      ? require('../assets/images/eye_open.png')
-                      : require('../assets/images/eye_closed.png')
-                  }
-                  style={styles.eyeIconImage}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-            </View>
-
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={[styles.input, { paddingRight: 45 }]}
+              placeholder="Enter Password"
+              placeholderTextColor="#999999"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+            />
             <TouchableOpacity
-              style={styles.forgotPasswordContainer}
-              onPress={onForgotPasswordPress}>
-              <Text style={styles.forgotPasswordText}>Forgot my Password</Text>
+              style={styles.eyeIconContainer}
+              onPress={() => setShowPassword(!showPassword)}>
+              <Image
+                source={
+                  showPassword
+                    ? require('../assets/images/eye_open.png')
+                    : require('../assets/images/eye_closed.png')
+                }
+                style={styles.eyeIconImage}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
+          </View>
 
-            <TouchableOpacity
-              style={styles.loginButton}
-              activeOpacity={0.8}
-              onPress={() => onLoginSubmit && onLoginSubmit(email, password)}>
-              <Text style={styles.loginButtonText}>Login</Text>
+          <TouchableOpacity
+            style={styles.forgotPasswordContainer}
+            onPress={onForgotPasswordPress}>
+            <Text style={styles.forgotPasswordText}>Forgot my Password</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.loginButton}
+            activeOpacity={0.8}
+            onPress={() => onLoginSubmit && onLoginSubmit(email, password)}>
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+
+          <View style={styles.signUpRow}>
+            <Text style={styles.noAccountText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={onSignUpPress}>
+              <Text style={styles.signUpText}>Sign up</Text>
             </TouchableOpacity>
+          </View>
 
-            <View style={styles.signUpRow}>
-              <Text style={styles.noAccountText}>Don't have an account? </Text>
-              <TouchableOpacity onPress={onSignUpPress}>
-                <Text style={styles.signUpText}>Sign up</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.dividerContainer}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
+            <View style={styles.dividerLine} />
+          </View>
 
-            <View style={styles.dividerContainer}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
-              <View style={styles.dividerLine} />
-            </View>
+          <View style={styles.socialButtonsRow}>
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
+                source={require('../assets/images/GOOGLE.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
+                source={require('../assets/images/FACEBOOK.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
+                source={require('../assets/images/FITBIT.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-            <View style={styles.socialButtonsRow}>
-              <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
-                <Image
-                  source={require('../assets/images/GOOGLE.png')}
-                  style={styles.socialIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
-                <Image
-                  source={require('../assets/images/FACEBOOK.png')}
-                  style={styles.socialIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
-                <Image
-                  source={require('../assets/images/FITBIT.png')}
-                  style={styles.socialIcon}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-            </View>
-
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Animated.View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0E0D',
+    backgroundColor: '#060B0E',
   },
   darkOverlayFull: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.78)',
+    backgroundColor: 'rgba(6, 11, 14, 0.75)',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
   },
   topHeaderContainer: {
-    flex: 1,
-    position: 'relative',
-  },
-  headerTextWrapper: {
-    position: 'absolute',
-    left: 28,
-    right: 28,
-  },
-  welcomeTaglineBox: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-  },
-  greetingHeaderBox: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-    paddingHorizontal: 24,
-  },
-  logoHeaderImage: {
-    width: 460,
-    height: 175,
-    resizeMode: 'contain',
-    tintColor: '#FFFFFF',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  headingText: {
-    fontSize: 34,
-    color: '#FFFFFF',
-    lineHeight: 44,
-    letterSpacing: -0.5,
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  highlightText: {
-    color: '#00FF9D',
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  greetingText: {
-    fontSize: 26,
-    color: '#FFFFFF',
-    marginBottom: 4,
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  welcomeTitleText: {
-    fontSize: 28,
-    color: '#FFFFFF',
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
-  },
-  chevronContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingBottom: 10,
   },
-  chevronArrow: {
-    color: '#00FF9D',
-    fontSize: 18,
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
+  logoHeaderImage: {
+    width: 280,
+    height: 70,
+    tintColor: '#00E5C0',
   },
-  slidingCard: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+  cardContainer: {
     backgroundColor: '#F5F6F5',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  dragHandleBar: {
-    width: 36,
-    height: 4,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 16,
-  },
-  cardScrollContent: {
     paddingHorizontal: 24,
-    paddingTop: 12,
+    paddingTop: 32,
+    flex: 1,
   },
   cardTitle: {
     fontSize: 26,
     color: '#0A3323',
     marginBottom: 4,
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
   },
   cardSubtitle: {
@@ -408,7 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 15,
     color: '#333333',
-    fontFamily: ROUNDED_FONT,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
   eyeIconContainer: {
     position: 'absolute',
@@ -430,24 +234,26 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     fontSize: 13,
     color: '#666666',
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
   },
   loginButton: {
-    backgroundColor: '#00FF9D',
+    backgroundColor: '#00E5C0',
     borderRadius: 12,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: '#00E5C0',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   loginButtonText: {
-    color: '#FFFFFF',
+    color: '#060B0E',
     fontSize: 19,
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
   },
   signUpRow: {
@@ -463,7 +269,8 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     fontSize: 14,
-    color: '#0A3B28',
+    color: '#00E5C0',
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
   },
   dividerContainer: {
@@ -481,6 +288,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     marginHorizontal: 10,
     letterSpacing: 0.5,
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
   },
   socialButtonsRow: {

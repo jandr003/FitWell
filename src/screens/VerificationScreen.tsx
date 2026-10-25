@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 22,
     color: '#0A3323',
-    fontFamily: ROUNDED_FONT,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
   errorText: {
     color: '#FF3B30',

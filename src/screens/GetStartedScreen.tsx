@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ROUNDED_FONT = 'vaga_round';
+const BODY_FONT = Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-rounded';
 
 interface OnboardingStep {
   id: 'train' | 'track' | 'improve';
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
   },
   darkGradientOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(6, 11, 14, 0.55)',
+    backgroundColor: 'rgba(6, 11, 14, 0.65)',
   },
   scrollContainer: {
     paddingHorizontal: 22,
@@ -322,15 +323,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: 2.2,
     fontFamily: ROUNDED_FONT,
+    fontWeight: 'bold',
   },
   activeTaglineWord: {
     color: '#00E5C0',
+    fontWeight: 'bold',
     textShadowColor: '#00E5C0',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
   },
   inactiveTaglineWord: {
     color: '#FFFFFF',
+    fontWeight: 'bold',
   },
   taglineSpace: {
     fontSize: 12,
@@ -346,7 +350,8 @@ const styles = StyleSheet.create({
   skipText: {
     color: '#E2E8F0',
     fontSize: 13,
-    fontFamily: ROUNDED_FONT,
+    fontWeight: 'bold',
+    fontFamily: BODY_FONT,
   },
   mainBodyContent: {
     width: '100%',
@@ -354,25 +359,35 @@ const styles = StyleSheet.create({
   },
   headlineTitle: {
     fontSize: 36,
+    fontWeight: 'bold',
     color: '#FFFFFF',
     lineHeight: 44,
     marginBottom: 12,
     letterSpacing: -0.5,
     fontFamily: ROUNDED_FONT,
+    textShadowColor: 'rgba(0, 0, 0, 0.95)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   highlightText: {
     color: '#00E5C0',
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
+    textShadowColor: 'rgba(0, 0, 0, 0.95)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
   },
   descriptionText: {
-    fontSize: 14,
-    color: '#D1D5DB',
+    fontSize: 14.5,
+    color: '#FFFFFF',
     lineHeight: 22,
     marginBottom: 36,
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    fontFamily: BODY_FONT,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+    textShadowColor: 'rgba(0, 0, 0, 0.95)',
+    textShadowOffset: { width: 0, height: 1.5 },
+    textShadowRadius: 6,
   },
   actionButton: {
     width: '100%',
@@ -391,6 +406,7 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#060B0E',
     fontSize: 17,
+    fontWeight: 'bold',
     letterSpacing: 0.5,
     fontFamily: ROUNDED_FONT,
   },
@@ -413,15 +429,17 @@ const styles = StyleSheet.create({
   },
   alreadyText: {
     fontSize: 13.5,
-    color: '#D1D5DB',
-    fontFamily: ROUNDED_FONT,
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    color: '#FFFFFF',
+    fontFamily: BODY_FONT,
+    fontWeight: '600',
+    textShadowColor: 'rgba(0, 0, 0, 0.95)',
+    textShadowOffset: { width: 0, height: 1.5 },
+    textShadowRadius: 6,
   },
   loginText: {
     fontSize: 13.5,
     color: '#00E5C0',
+    fontWeight: 'bold',
     fontFamily: ROUNDED_FONT,
   },
 });

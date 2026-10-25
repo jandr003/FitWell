@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     fontSize: 15,
     color: '#333333',
-    fontFamily: ROUNDED_FONT,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
   },
   eyeIconContainer: {
     position: 'absolute',

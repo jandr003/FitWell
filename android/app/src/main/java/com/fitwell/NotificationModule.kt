@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.facebook.react.bridge.ReactApplicationContext
@@ -23,10 +24,10 @@ class NotificationModule(reactContext: ReactApplicationContext) :
   @ReactMethod
   fun sendNotification(title: String, message: String) {
     Log.d("FitWellNotif", "sendNotification called: $title - $message")
-    val activity = currentActivity as? MainActivity
-    if (activity != null) {
-      activity.runOnUiThread {
-        activity.sendSystemNotification(title, message)
+    val currentAct = reactApplicationContext.currentActivity
+    if (currentAct is MainActivity) {
+      currentAct.runOnUiThread {
+        currentAct.sendSystemNotification(title, message)
       }
     } else {
       val context = reactApplicationContext
@@ -53,13 +54,13 @@ class NotificationModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun requestNotificationPermission() {
-    val activity = currentActivity
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && activity != null) {
+    val currentAct = reactApplicationContext.currentActivity
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && currentAct != null) {
       if (ContextCompat.checkSelfPermission(reactApplicationContext, Manifest.permission.POST_NOTIFICATIONS)
           != PackageManager.PERMISSION_GRANTED) {
-        activity.runOnUiThread {
+        currentAct.runOnUiThread {
           try {
-            activity.requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
+            ActivityCompat.requestPermissions(currentAct, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
           } catch (e: Exception) {
             Log.e("FitWellNotif", "Error requesting permission", e)
           }
