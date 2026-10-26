@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ROUNDED_FONT = 'vaga_round';
+const ROUNDED_FONT = 'Poppins-Bold';
 const { width } = Dimensions.get('window');
 
 interface ForgotPasswordScreenProps {
@@ -229,8 +229,9 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
-    letterSpacing: 0.5,
-    fontFamily: ROUNDED_FONT,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
   },
 });
 

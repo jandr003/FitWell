@@ -12,9 +12,6 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const ROUNDED_FONT = 'vaga_round';
-const BODY_FONT = Platform.OS === 'ios' ? 'Arial Rounded MT Bold' : 'sans-serif-rounded';
-
 interface OnboardingStep {
   id: 'train' | 'track' | 'improve';
   title: string;
@@ -61,6 +58,7 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isSkipPressed, setIsSkipPressed] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -185,8 +183,19 @@ export const GetStartedScreen: React.FC<GetStartedScreenProps> = ({
           </View>
 
           {!isLastStep && (
-            <TouchableOpacity style={styles.skipButton} onPress={onGetStartedPress}>
-              <Text style={styles.skipText}>Skip</Text>
+            <TouchableOpacity
+              style={styles.skipButton}
+              activeOpacity={0.85}
+              onPressIn={() => setIsSkipPressed(true)}
+              onPressOut={() => setIsSkipPressed(false)}
+              onPress={onGetStartedPress}>
+              <Text
+                style={[
+                  styles.skipText,
+                  isSkipPressed && styles.skipTextGlow,
+                ]}>
+                Skip
+              </Text>
             </TouchableOpacity>
           )}
         </View>
@@ -322,7 +331,6 @@ const styles = StyleSheet.create({
   taglineWord: {
     fontSize: 12,
     letterSpacing: 2.2,
-    fontFamily: ROUNDED_FONT,
     fontWeight: 'bold',
   },
   activeTaglineWord: {
@@ -340,18 +348,20 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   skipButton: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'transparent',
   },
   skipText: {
     color: '#E2E8F0',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: 'bold',
-    fontFamily: BODY_FONT,
+  },
+  skipTextGlow: {
+    color: '#00E5C0',
+    textShadowColor: '#00E5C0',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 14,
   },
   mainBodyContent: {
     width: '100%',
@@ -364,7 +374,6 @@ const styles = StyleSheet.create({
     lineHeight: 44,
     marginBottom: 12,
     letterSpacing: -0.5,
-    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.95)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
@@ -372,7 +381,6 @@ const styles = StyleSheet.create({
   highlightText: {
     color: '#00E5C0',
     fontWeight: 'bold',
-    fontFamily: ROUNDED_FONT,
     textShadowColor: 'rgba(0, 0, 0, 0.95)',
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 8,
@@ -382,7 +390,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     lineHeight: 22,
     marginBottom: 36,
-    fontFamily: BODY_FONT,
     fontWeight: '600',
     letterSpacing: 0.2,
     textShadowColor: 'rgba(0, 0, 0, 0.95)',
@@ -407,8 +414,7 @@ const styles = StyleSheet.create({
     color: '#060B0E',
     fontSize: 17,
     fontWeight: 'bold',
-    letterSpacing: 0.5,
-    fontFamily: ROUNDED_FONT,
+    letterSpacing: 0.8,
   },
   dotsIndicatorRow: {
     flexDirection: 'row',
@@ -430,7 +436,6 @@ const styles = StyleSheet.create({
   alreadyText: {
     fontSize: 13.5,
     color: '#FFFFFF',
-    fontFamily: BODY_FONT,
     fontWeight: '600',
     textShadowColor: 'rgba(0, 0, 0, 0.95)',
     textShadowOffset: { width: 0, height: 1.5 },
@@ -440,7 +445,6 @@ const styles = StyleSheet.create({
     fontSize: 13.5,
     color: '#00E5C0',
     fontWeight: 'bold',
-    fontFamily: ROUNDED_FONT,
   },
 });
 

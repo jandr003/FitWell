@@ -11,7 +11,7 @@ import CreateNewPasswordScreen from './src/screens/CreateNewPasswordScreen';
 type ScreenName = 'get_started' | 'welcome' | 'login' | 'signup' | 'forgot_password' | 'verification' | 'create_new_password';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<ScreenName>('get_started');
+  const [currentScreen, setCurrentScreen] = useState<ScreenName>('welcome');
   const [userEmail, setUserEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('5433');
 

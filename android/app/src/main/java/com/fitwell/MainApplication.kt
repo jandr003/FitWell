@@ -24,7 +24,7 @@ class MainApplication : Application(), ReactApplication {
     super.onCreate()
     try {
       val fontMgr = ReactFontManager.getInstance()
-      val fontNames = arrayOf("vaga_round", "VagRound", "VAG Rounded", "VagaRound", "Fredoka-Bold")
+      val fontNames = arrayOf("vaga_round", "VagRound", "VAG Rounded", "VagaRound", "Fredoka-Bold", "Poppins", "Poppins-Bold")
       for (name in fontNames) {
         fontMgr.addCustomFont(this, name, R.font.vaga_round)
       }
@@ -33,7 +33,8 @@ class MainApplication : Application(), ReactApplication {
         fontMgr.addCustomFont("vaga_round", tf)
         fontMgr.addCustomFont("VagRound", tf)
         fontMgr.addCustomFont("VAG Rounded", tf)
-        fontMgr.addCustomFont("Fredoka-Bold", tf)
+        fontMgr.addCustomFont("Poppins", tf)
+        fontMgr.addCustomFont("Poppins-Bold", tf)
       }
     } catch (e: Exception) {
       e.printStackTrace()
