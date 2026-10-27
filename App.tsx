@@ -11,7 +11,7 @@ import CreateNewPasswordScreen from './src/screens/CreateNewPasswordScreen';
 type ScreenName = 'get_started' | 'welcome' | 'login' | 'signup' | 'forgot_password' | 'verification' | 'create_new_password';
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<ScreenName>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<ScreenName>('get_started');
   const [userEmail, setUserEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('5433');
 
@@ -55,20 +55,11 @@ function App() {
       )}
 
       {currentScreen === 'welcome' && (
-        <WelcomeScreen
-          onLoginSubmit={(email, pass) => console.log('Login:', email, pass)}
-          onSignUpPress={() => setCurrentScreen('signup')}
-          onForgotPasswordPress={handleStartForgotPassword}
-        />
+        <WelcomeScreen />
       )}
 
       {currentScreen === 'login' && (
-        <LoginScreen
-          onBackToWelcome={() => setCurrentScreen('welcome')}
-          onSignUpPress={() => setCurrentScreen('signup')}
-          onForgotPasswordPress={handleStartForgotPassword}
-          onLoginPress={(email, pass) => console.log('Login:', email, pass)}
-        />
+        <LoginScreen />
       )}
 
       {currentScreen === 'signup' && (

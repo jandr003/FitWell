@@ -1,15 +1,27 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  ImageSourcePropType,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface WavelengthHeaderProps {
   title?: string;
   subtitle?: string;
   showBackButton?: boolean;
+  showLogo?: boolean;
   onBackPress?: () => void;
-  darkColor?: string;
+  bgImageSource?: ImageSourcePropType;
+  overlayColor?: string;
+  ribbonColor?: string;
   lightColor?: string;
   heightRatio?: number;
 }
@@ -18,59 +30,76 @@ export const WavelengthHeader: React.FC<WavelengthHeaderProps> = ({
   title,
   subtitle,
   showBackButton = false,
+  showLogo = true,
   onBackPress,
-  darkColor = '#080D22',
+  bgImageSource = require('../assets/images/workout_header_bg.jpg'),
+  overlayColor = 'rgba(6, 11, 24, 0.82)',
+  ribbonColor,
   lightColor = '#F2F4F7',
-  heightRatio = 0.35,
+  heightRatio = 0.37,
 }) => {
   const insets = useSafeAreaInsets();
   const headerHeight = Math.round(SCREEN_HEIGHT * heightRatio);
 
   return (
-    <View style={[styles.container, { height: headerHeight, backgroundColor: darkColor }]}>
-      <View
-        style={[
-          styles.rightLightShape,
-          {
-            backgroundColor: lightColor,
-            width: SCREEN_WIDTH * 0.82,
-            height: headerHeight * 0.60,
-            bottom: 0,
-            right: -SCREEN_WIDTH * 0.08,
-            borderTopLeftRadius: SCREEN_WIDTH * 0.48,
-          },
-        ]}
-      />
+    <View style={[styles.container, { height: headerHeight }]}>
+      {bgImageSource ? (
+        <Image
+          source={bgImageSource}
+          style={styles.bgImage}
+          resizeMode="cover"
+        />
+      ) : null}
 
       <View
         style={[
-          styles.leftDarkDip,
-          {
-            backgroundColor: darkColor,
-            width: SCREEN_WIDTH * 0.52,
-            height: headerHeight * 0.36,
-            bottom: 0,
-            left: 0,
-            borderBottomRightRadius: SCREEN_WIDTH * 0.36,
-          },
+          StyleSheet.absoluteFill,
+          { backgroundColor: overlayColor },
         ]}
       />
 
-      <View style={[styles.contentOverlay, { paddingTop: insets.top + 16 }]}>
-        <View style={styles.topRow}>
-          {showBackButton && (
-            <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
-              <Text style={styles.backArrow}>←</Text>
-            </TouchableOpacity>
-          )}
+      <Svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        style={StyleSheet.absoluteFill}>
 
-          <Image
-            source={require('../assets/images/fitwell_logo_dash.png')}
-            style={styles.brandLogoImage}
-            tintColor="#00E5C0"
-            resizeMode="contain"
-          />
-        </View>
+        <Defs>
+          <LinearGradient id="fitwellRibbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <Stop offset="0%" stopColor="#00E5C0" stopOpacity={0.95} />
+            <Stop offset="50%" stopColor="#00B4D8" stopOpacity={0.95} />
+            <Stop offset="100%" stopColor="#0080FF" stopOpacity={0.95} />
+          </LinearGradient>
+        </Defs>
+
+        <Path
+          d="M 0,94.7 C 35,98.5 60,63 100,61 L 100,68 C 60,68 35,100 0,95 Z"
+          fill={ribbonColor ? ribbonColor : 'url(#fitwellRibbonGrad)'}
+        />
+
+        <Path
+          d="M 0,95 C 35,100 60,68 100,68 L 100,100 L 0,100 Z"
+          fill={lightColor}
+        />
+      </Svg>
+
+      <View style={[styles.contentOverlay, { paddingTop: insets.top + 12 }]}>
+        {showBackButton && (
+          <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
+            <Text style={styles.backArrow}>←</Text>
+          </TouchableOpacity>
+        )}
+
+        {showLogo && (
+          <View style={styles.logoCenterContainer}>
+            <Image
+              source={require('../assets/images/fitwell_logo_dash.png')}
+              style={styles.brandLogoImage}
+              resizeMode="contain"
+            />
+          </View>
+        )}
 
         {subtitle ? <Text style={styles.subtitleText}>{subtitle}</Text> : null}
         {title ? <Text style={styles.titleText}>{title}</Text> : null}
@@ -84,14 +113,11 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'relative',
     overflow: 'hidden',
+    backgroundColor: '#0A0F24',
   },
-  rightLightShape: {
-    position: 'absolute',
-    zIndex: 1,
-  },
-  leftDarkDip: {
-    position: 'absolute',
-    zIndex: 2,
+  bgImage: {
+    width: '100%',
+    height: '100%',
   },
   contentOverlay: {
     position: 'absolute',
@@ -99,37 +125,46 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 3,
-    paddingHorizontal: 24,
-  },
-  topRow: {
-    flexDirection: 'row',
+    zIndex: 10,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
   },
   backButton: {
-    marginRight: 12,
+    position: 'absolute',
+    left: 20,
+    top: 20,
+    zIndex: 20,
   },
   backArrow: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#00E5C0',
   },
+  logoCenterContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: -30,
+    marginBottom: 20,
+  },
   brandLogoImage: {
-    width: 200,
-    height: 48,
-    marginLeft: -45,
+    width: 290,
+    height: 76,
+    marginLeft: 0,
   },
   subtitleText: {
-    fontSize: 15,
-    color: '#94A3B8',
+    fontSize: 16,
+    color: '#CBD5E1',
     fontWeight: '500',
+    textAlign: 'center',
   },
   titleText: {
-    fontSize: 32,
+    fontSize: 34,
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginTop: 2,
+    textAlign: 'center',
   },
 });
 

@@ -9,6 +9,9 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-Native_Modules-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org/)
 [![Gradle](https://img.shields.io/badge/Gradle-8.9-02303A?style=flat-square&logo=gradle&logoColor=white)](https://gradle.org/)
 
+> [!NOTE]
+> I'm currently updating FitWell's color palette to match the new UI design
+
 FitWell is a fitness and health tracking mobile application designed to provide personalized workout routines, exercise tracking, account security, and progress monitoring.
 
 The application features a dark, modern interface with responsive layouts designed for mobile phones, foldables, and tablets.

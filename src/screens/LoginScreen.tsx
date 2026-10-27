@@ -1,47 +1,20 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from 'react-native';
+import { StyleSheet, View, StatusBar } from 'react-native';
 import WavelengthHeader from '../components/WavelengthHeader';
 
-interface LoginScreenProps {
-  onSignUpPress?: () => void;
-  onForgotPasswordPress?: () => void;
-  onLoginPress?: (email: string, pass: string) => void;
-  onBackToWelcome?: () => void;
-}
-
-export const LoginScreen: React.FC<LoginScreenProps> = () => {
+export const LoginScreen: React.FC = () => {
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        keyboardShouldPersistTaps="handled"
-        bounces={false}>
-
-        <WavelengthHeader />
-
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <WavelengthHeader />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F3F5F8',
-  },
-  scrollContainer: {
-    flexGrow: 1,
+    backgroundColor: '#F2F4F7',
   },
 });
 
