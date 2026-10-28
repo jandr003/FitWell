@@ -10,12 +10,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import WavelengthHeader from '../components/WavelengthHeader';
 
-const ROUNDED_FONT = 'Poppins-Bold';
-const { width } = Dimensions.get('window');
+const OUTFIT_BOLD = Platform.OS === 'ios' ? 'Outfit-Bold' : 'outfit_bold';
+const POPPINS_REGULAR = Platform.OS === 'ios' ? 'Poppins-Regular' : 'poppins_regular';
+const POPPINS_SEMIBOLD = Platform.OS === 'ios' ? 'Poppins-SemiBold' : 'poppins_semibold';
 
 interface SignUpScreenProps {
   onLoginPress?: () => void;
@@ -26,7 +27,6 @@ interface SignUpScreenProps {
 export const SignUpScreen: React.FC<SignUpScreenProps> = ({
   onLoginPress,
   onSignUpSubmit,
-  onBackToWelcome,
 }) => {
   const insets = useSafeAreaInsets();
   const [fullName, setFullName] = useState('');
@@ -71,39 +71,27 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={styles.darkOverlayFull} />
-      </View>
-
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
-        bounces={false}>
+        bounces={false}
+        showsVerticalScrollIndicator={false}>
 
-        <View style={[styles.topSection, { paddingTop: insets.top + 20 }]}>
-          {onBackToWelcome && (
-            <TouchableOpacity style={styles.backButton} onPress={onBackToWelcome}>
-              <Text style={styles.backArrow}>←</Text>
-            </TouchableOpacity>
-          )}
+        <WavelengthHeader
+          flipWave={true}
+          bgImageSource={require('../assets/images/signup_header_bg.jpg')}
+        />
 
-          <View style={styles.headerRow}>
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.greetingText}>Create Account</Text>
-              <Text style={styles.welcomeTitleText}>Join FitWell</Text>
-            </View>
-          </View>
-        </View>
+        <View style={[styles.formContainer, { paddingBottom: insets.bottom + 24 }]}>
 
-        <View style={[styles.cardContainer, { paddingBottom: insets.bottom + 24 }]}>
-          <Text style={styles.cardTitle}>Get Started</Text>
-          <Text style={styles.cardSubtitle}>Create your account to start your fitness journey</Text>
+          <Text style={styles.mainTitle}>Create Your Account</Text>
+          <Text style={styles.subTitle}>Join FitWell and start your fitness journey today.</Text>
 
-          <View style={styles.inputWrapper}>
+          <View style={styles.inputBox}>
             <TextInput
-              style={styles.input}
-              placeholder="Full Name"
-              placeholderTextColor="#999999"
+              style={styles.textInput}
+              placeholder="Full name"
+              placeholderTextColor="#94A3B8"
               value={fullName}
               onChangeText={(val) => {
                 setFullName(val);
@@ -113,11 +101,11 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
             />
           </View>
 
-          <View style={styles.inputWrapper}>
+          <View style={styles.inputBox}>
             <TextInput
-              style={styles.input}
-              placeholder="Enter Email"
-              placeholderTextColor="#999999"
+              style={styles.textInput}
+              placeholder="Email address"
+              placeholderTextColor="#94A3B8"
               value={email}
               onChangeText={(val) => {
                 setEmail(val);
@@ -128,11 +116,11 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
             />
           </View>
 
-          <View style={styles.inputWrapper}>
+          <View style={styles.inputBox}>
             <TextInput
-              style={[styles.input, { paddingRight: 45 }]}
-              placeholder="Enter Password"
-              placeholderTextColor="#999999"
+              style={[styles.textInput, { paddingRight: 40 }]}
+              placeholder="Password"
+              placeholderTextColor="#94A3B8"
               value={password}
               onChangeText={(val) => {
                 setPassword(val);
@@ -141,7 +129,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
               secureTextEntry={!showPassword}
             />
             <TouchableOpacity
-              style={styles.eyeIconContainer}
+              style={styles.eyeIconButton}
               onPress={() => setShowPassword(!showPassword)}>
               <Image
                 source={
@@ -155,11 +143,11 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
             </TouchableOpacity>
           </View>
 
-          <View style={styles.inputWrapper}>
+          <View style={styles.inputBox}>
             <TextInput
-              style={[styles.input, { paddingRight: 45 }]}
-              placeholder="Confirm Password"
-              placeholderTextColor="#999999"
+              style={[styles.textInput, { paddingRight: 40 }]}
+              placeholder="Confirm password"
+              placeholderTextColor="#94A3B8"
               value={confirmPassword}
               onChangeText={(val) => {
                 setConfirmPassword(val);
@@ -168,7 +156,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
               secureTextEntry={!showConfirmPassword}
             />
             <TouchableOpacity
-              style={styles.eyeIconContainer}
+              style={styles.eyeIconButton}
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
               <Image
                 source={
@@ -188,19 +176,12 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
 
           <TouchableOpacity
             style={styles.signUpButton}
-            activeOpacity={0.8}
+            activeOpacity={0.85}
             onPress={handleSignUp}>
-            <Text style={styles.signUpButtonText}>CREATE ACCOUNT</Text>
+            <Text style={styles.signUpButtonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          <View style={styles.loginRow}>
-            <Text style={styles.alreadyAccountText}>Already have an account? </Text>
-            <TouchableOpacity onPress={onLoginPress}>
-              <Text style={styles.loginLinkText}>Log in</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.dividerContainer}>
+          <View style={styles.dividerRow}>
             <View style={styles.dividerLine} />
             <Text style={styles.dividerText}>OR SIGN UP WITH</Text>
             <View style={styles.dividerLine} />
@@ -209,11 +190,20 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
           <View style={styles.socialButtonsRow}>
             <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
               <Image
+                source={require('../assets/images/FITBIT.png')}
+                style={styles.socialIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
+              <Image
                 source={require('../assets/images/GOOGLE.png')}
                 style={styles.socialIcon}
                 resizeMode="contain"
               />
             </TouchableOpacity>
+
             <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
               <Image
                 source={require('../assets/images/FACEBOOK.png')}
@@ -221,14 +211,15 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
                 resizeMode="contain"
               />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialCircleButton} activeOpacity={0.8}>
-              <Image
-                source={require('../assets/images/FITBIT.png')}
-                style={styles.socialIcon}
-                resizeMode="contain"
-              />
+          </View>
+
+          <View style={styles.loginRow}>
+            <Text style={styles.alreadyText}>Already have an account? </Text>
+            <TouchableOpacity onPress={onLoginPress}>
+              <Text style={styles.loginText}>Log In</Text>
             </TouchableOpacity>
           </View>
+
         </View>
 
       </ScrollView>
@@ -239,192 +230,145 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0E0D',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
-  darkOverlayFull: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.60)',
+    backgroundColor: '#F3F5F8',
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'space-between',
   },
-  topSection: {
-    paddingHorizontal: 24,
-    paddingBottom: 20,
-    justifyContent: 'center',
-  },
-  backButton: {
-    marginBottom: 12,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-  },
-  backArrow: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontFamily: ROUNDED_FONT,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  headerTextContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  greetingText: {
-    fontSize: 26,
-    color: '#FFFFFF',
-    marginBottom: 4,
-    fontFamily: ROUNDED_FONT,
-  },
-  welcomeTitleText: {
-    fontSize: 28,
-    color: '#FFFFFF',
-    fontFamily: ROUNDED_FONT,
-  },
-  headerDumbbell: {
-    width: width * 0.35,
-    height: width * 0.35,
-  },
-  cardContainer: {
-    backgroundColor: '#F5F6F5',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: 24,
-    paddingTop: 28,
+  formContainer: {
+    paddingHorizontal: 26,
+    paddingTop: 10,
+    marginTop: 8,
     flex: 1,
   },
-  cardTitle: {
-    fontSize: 26,
-    color: '#0A3323',
+  mainTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#0B122A',
+    fontFamily: OUTFIT_BOLD,
     marginBottom: 4,
-    fontFamily: ROUNDED_FONT,
+    letterSpacing: -0.5,
   },
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#666666',
-    marginBottom: 20,
-    fontFamily: ROUNDED_FONT,
-  },
-  inputWrapper: {
-    position: 'relative',
-    marginBottom: 14,
-  },
-  input: {
-    backgroundColor: '#EAEAEA',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 13,
+  subTitle: {
     fontSize: 15,
-    color: '#333333',
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
+    marginBottom: 20,
   },
-  eyeIconContainer: {
-    position: 'absolute',
-    right: 14,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
+  inputBox: {
+    flexDirection: 'row',
     alignItems: 'center',
-    width: 32,
+    backgroundColor: '#EDF2F7',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    marginBottom: 18,
+    position: 'relative',
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 15,
+    color: '#0B122A',
+    fontFamily: POPPINS_REGULAR,
+    padding: 0,
+  },
+  eyeIconButton: {
+    position: 'absolute',
+    right: 16,
+    padding: 4,
   },
   eyeIconImage: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
+    tintColor: '#64748B',
   },
   errorText: {
     color: '#FF3B30',
     fontSize: 13,
     marginBottom: 12,
-    fontFamily: ROUNDED_FONT,
+    fontFamily: POPPINS_REGULAR,
   },
   signUpButton: {
-    backgroundColor: '#00FF9D',
-    borderRadius: 12,
+    width: '100%',
+    backgroundColor: '#00E5C0',
+    borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 6,
-    marginBottom: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginTop: 4,
+    marginBottom: 18,
+    elevation: 3,
+    shadowColor: '#00E5C0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   signUpButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
+    color: '#060B0E',
+    fontSize: 17,
+    fontWeight: 'bold',
+    fontFamily: POPPINS_SEMIBOLD,
   },
-  loginRow: {
+  dividerRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
-  },
-  alreadyAccountText: {
-    fontSize: 14,
-    color: '#666666',
-    fontFamily: ROUNDED_FONT,
-  },
-  loginLinkText: {
-    fontSize: 14,
-    color: '#0A3B28',
-    fontFamily: ROUNDED_FONT,
-  },
-  dividerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 14,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: '#E2E8F0',
   },
   dividerText: {
-    color: '#888888',
-    fontSize: 11,
-    marginHorizontal: 10,
-    letterSpacing: 0.5,
-    fontFamily: ROUNDED_FONT,
+    fontSize: 11.5,
+    color: '#94A3B8',
+    fontFamily: POPPINS_REGULAR,
+    paddingHorizontal: 12,
+    letterSpacing: 0.8,
   },
   socialButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 20,
-    marginTop: 4,
+    marginBottom: 20,
   },
   socialCircleButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#EAEAEA',
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
   },
   socialIcon: {
-    width: 28,
-    height: 28,
+    width: 26,
+    height: 26,
+  },
+  loginRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  noAccountText: {
+    fontSize: 13.5,
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
+  },
+  loginText: {
+    fontSize: 13.5,
+    color: '#00E5C0',
+    fontFamily: POPPINS_SEMIBOLD,
   },
 });
 

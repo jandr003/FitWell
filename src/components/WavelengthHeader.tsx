@@ -24,6 +24,7 @@ interface WavelengthHeaderProps {
   ribbonColor?: string;
   lightColor?: string;
   heightRatio?: number;
+  flipWave?: boolean;
 }
 
 export const WavelengthHeader: React.FC<WavelengthHeaderProps> = ({
@@ -37,6 +38,7 @@ export const WavelengthHeader: React.FC<WavelengthHeaderProps> = ({
   ribbonColor,
   lightColor = '#F2F4F7',
   heightRatio = 0.37,
+  flipWave = false,
 }) => {
   const insets = useSafeAreaInsets();
   const headerHeight = Math.round(SCREEN_HEIGHT * heightRatio);
@@ -63,7 +65,10 @@ export const WavelengthHeader: React.FC<WavelengthHeaderProps> = ({
         height="100%"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        style={StyleSheet.absoluteFill}>
+        style={[
+          StyleSheet.absoluteFill,
+          flipWave ? { transform: [{ scaleX: -1 }] } : undefined,
+        ]}>
 
         <Defs>
           <LinearGradient id="fitwellRibbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -145,12 +150,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    marginTop: -30,
-    marginBottom: 20,
+    marginTop: -40,
   },
   brandLogoImage: {
-    width: 290,
-    height: 76,
+    width: 520,
+    height: 138,
     marginLeft: 0,
   },
   subtitleText: {

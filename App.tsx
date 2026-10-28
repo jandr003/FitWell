@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { Animated, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import GetStartedScreen from './src/screens/GetStartedScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
@@ -15,6 +16,23 @@ function App() {
   const [userEmail, setUserEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('5433');
 
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  const navigateTo = (nextScreen: ScreenName) => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 150,
+      useNativeDriver: true,
+    }).start(() => {
+      setCurrentScreen(nextScreen);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
   const generateNewCode = () => {
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setVerificationCode(code);
@@ -22,79 +40,102 @@ function App() {
   };
 
   const handleStartForgotPassword = () => {
-    setCurrentScreen('forgot_password');
+    navigateTo('forgot_password');
   };
 
   const handleForgotPasswordEmailSubmit = (email: string) => {
     setUserEmail(email);
     generateNewCode();
-    setCurrentScreen('verification');
+    navigateTo('verification');
   };
 
   const handleVerificationSuccess = () => {
-    setCurrentScreen('create_new_password');
+    navigateTo('create_new_password');
   };
 
   const handlePasswordResetComplete = () => {
-    setCurrentScreen('login');
+    navigateTo('login');
   };
 
   const handleSignUpSubmit = (fullName: string, email: string) => {
     setUserEmail(email);
     generateNewCode();
-    setCurrentScreen('verification');
+    navigateTo('verification');
   };
 
   return (
     <SafeAreaProvider>
-      {currentScreen === 'get_started' && (
-        <GetStartedScreen
-          onGetStartedPress={() => setCurrentScreen('welcome')}
-          onLoginPress={() => setCurrentScreen('login')}
-        />
-      )}
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            opacity: fadeAnim,
+          },
+        ]}>
+        {currentScreen === 'get_started' && (
+          <GetStartedScreen
+            onGetStartedPress={() => navigateTo('welcome')}
+            onLoginPress={() => navigateTo('login')}
+          />
+        )}
 
-      {currentScreen === 'welcome' && (
-        <WelcomeScreen />
-      )}
+        {currentScreen === 'welcome' && (
+          <WelcomeScreen
+            onLoginSubmit={(email, pass) => console.log('Login:', email, pass)}
+            onSignUpPress={() => navigateTo('signup')}
+            onForgotPasswordPress={handleStartForgotPassword}
+          />
+        )}
 
-      {currentScreen === 'login' && (
-        <LoginScreen />
-      )}
+        {currentScreen === 'login' && (
+          <LoginScreen
+            onBackToWelcome={() => navigateTo('welcome')}
+            onSignUpPress={() => navigateTo('signup')}
+            onForgotPasswordPress={handleStartForgotPassword}
+            onLoginPress={(email, pass) => console.log('Login:', email, pass)}
+          />
+        )}
 
-      {currentScreen === 'signup' && (
-        <SignUpScreen
-          onBackToWelcome={() => setCurrentScreen('welcome')}
-          onLoginPress={() => setCurrentScreen('login')}
-          onSignUpSubmit={handleSignUpSubmit}
-        />
-      )}
+        {currentScreen === 'signup' && (
+          <SignUpScreen
+            onBackToWelcome={() => navigateTo('welcome')}
+            onLoginPress={() => navigateTo('welcome')}
+            onSignUpSubmit={handleSignUpSubmit}
+          />
+        )}
 
-      {currentScreen === 'forgot_password' && (
-        <ForgotPasswordScreen
-          onBackToLogin={() => setCurrentScreen('login')}
-          onContinue={handleForgotPasswordEmailSubmit}
-        />
-      )}
+        {currentScreen === 'forgot_password' && (
+          <ForgotPasswordScreen
+            onBackToLogin={() => navigateTo('login')}
+            onContinue={handleForgotPasswordEmailSubmit}
+          />
+        )}
 
-      {currentScreen === 'verification' && (
-        <VerificationScreen
-          email={userEmail}
-          verificationCode={verificationCode}
-          onBack={() => setCurrentScreen('forgot_password')}
-          onVerifySuccess={handleVerificationSuccess}
-          onResendCode={generateNewCode}
-        />
-      )}
+        {currentScreen === 'verification' && (
+          <VerificationScreen
+            email={userEmail}
+            verificationCode={verificationCode}
+            onBack={() => navigateTo('forgot_password')}
+            onVerifySuccess={handleVerificationSuccess}
+            onResendCode={generateNewCode}
+          />
+        )}
 
-      {currentScreen === 'create_new_password' && (
-        <CreateNewPasswordScreen
-          onBack={() => setCurrentScreen('verification')}
-          onSubmitSuccess={handlePasswordResetComplete}
-        />
-      )}
+        {currentScreen === 'create_new_password' && (
+          <CreateNewPasswordScreen
+            onBack={() => navigateTo('verification')}
+            onSubmitSuccess={handlePasswordResetComplete}
+          />
+        )}
+      </Animated.View>
     </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default App;
