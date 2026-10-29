@@ -5,17 +5,17 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
   StatusBar,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import WavelengthHeader from '../components/WavelengthHeader';
 
-const ROUNDED_FONT = 'Poppins-Bold';
-const { width } = Dimensions.get('window');
+const OUTFIT_BOLD = Platform.OS === 'ios' ? 'Outfit-Bold' : 'outfit_bold';
+const POPPINS_REGULAR = Platform.OS === 'ios' ? 'Poppins-Regular' : 'poppins_regular';
+const POPPINS_SEMIBOLD = Platform.OS === 'ios' ? 'Poppins-SemiBold' : 'poppins_semibold';
 
 interface ForgotPasswordScreenProps {
   onBackToLogin?: () => void;
@@ -30,7 +30,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleContinue = () => {
+  const handleSendResetLink = () => {
     if (!email.trim()) {
       setErrorMessage('Please enter your email address');
       return;
@@ -47,40 +47,26 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={styles.darkOverlayFull} />
-      </View>
-
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
-        bounces={false}>
+        bounces={false}
+        showsVerticalScrollIndicator={false}>
 
-        <View style={[styles.topSection, { paddingTop: insets.top + 20 }]}>
-          <TouchableOpacity style={styles.backButton} onPress={onBackToLogin}>
-            <Text style={styles.backArrow}>←</Text>
-          </TouchableOpacity>
+        <WavelengthHeader />
 
-          <View style={styles.headerRow}>
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.greetingText}>Forget Password</Text>
-              <Text style={styles.welcomeTitleText}>Reset Account</Text>
-            </View>
-          </View>
-        </View>
+        <View style={[styles.formContainer, { paddingBottom: insets.bottom + 24 }]}>
 
-        <View style={[styles.cardContainer, { paddingBottom: insets.bottom + 24 }]}>
-          <Text style={styles.cardTitle}>Forget Password</Text>
-          <Text style={styles.cardSubtitle}>
-            Please enter your registered email address to receive a verification code.
+          <Text style={styles.mainTitle}>Forgot Your{'\n'}Password?</Text>
+          <Text style={styles.subTitle}>
+            Enter your email address and we'll send you instructions to reset your password.
           </Text>
 
-          <Text style={styles.inputLabel}>Email</Text>
-          <View style={styles.inputWrapper}>
+          <View style={styles.inputBox}>
             <TextInput
-              style={styles.input}
-              placeholder="Enter Email"
-              placeholderTextColor="#999999"
+              style={styles.textInput}
+              placeholder="Email address"
+              placeholderTextColor="#94A3B8"
               value={email}
               onChangeText={(text) => {
                 setEmail(text);
@@ -96,11 +82,25 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           )}
 
           <TouchableOpacity
-            style={styles.actionButton}
-            activeOpacity={0.8}
-            onPress={handleContinue}>
-            <Text style={styles.actionButtonText}>CONTINUE</Text>
+            style={styles.sendButton}
+            activeOpacity={0.85}
+            onPress={handleSendResetLink}>
+            <Text style={styles.sendButtonText}>Send Reset Link</Text>
           </TouchableOpacity>
+
+          <View style={styles.dividerRow}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity
+            style={styles.backToLoginButton}
+            onPress={onBackToLogin}>
+            <Text style={styles.backArrowText}>← </Text>
+            <Text style={styles.backToLoginText}>Back to Login</Text>
+          </TouchableOpacity>
+
         </View>
 
       </ScrollView>
@@ -111,127 +111,110 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0E0D',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
-  darkOverlayFull: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.60)',
+    backgroundColor: '#F3F5F8',
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'space-between',
   },
-  topSection: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    justifyContent: 'center',
-  },
-  backButton: {
-    marginBottom: 12,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-  },
-  backArrow: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontFamily: ROUNDED_FONT,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  headerTextContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  greetingText: {
-    fontSize: 26,
-    color: '#FFFFFF',
-    marginBottom: 4,
-    fontFamily: ROUNDED_FONT,
-  },
-  welcomeTitleText: {
-    fontSize: 28,
-    color: '#FFFFFF',
-    fontFamily: ROUNDED_FONT,
-  },
-  headerDumbbell: {
-    width: width * 0.35,
-    height: width * 0.35,
-  },
-  cardContainer: {
-    backgroundColor: '#F5F6F5',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: 24,
-    paddingTop: 32,
+  formContainer: {
+    paddingHorizontal: 26,
+    paddingTop: 10,
+    marginTop: 8,
     flex: 1,
   },
-  cardTitle: {
-    fontSize: 26,
-    color: '#0A3323',
+  mainTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#0B122A',
+    fontFamily: OUTFIT_BOLD,
     marginBottom: 6,
-    fontFamily: ROUNDED_FONT,
+    letterSpacing: -0.5,
+    lineHeight: 38,
   },
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
+  subTitle: {
+    fontSize: 14.5,
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
+    lineHeight: 22,
     marginBottom: 24,
-    fontFamily: ROUNDED_FONT,
   },
-  inputLabel: {
-    fontSize: 13,
-    color: '#333333',
-    marginBottom: 8,
-    fontFamily: ROUNDED_FONT,
-  },
-  inputWrapper: {
-    position: 'relative',
-    marginBottom: 16,
-  },
-  input: {
-    backgroundColor: '#EAEAEA',
-    borderRadius: 12,
-    paddingHorizontal: 16,
+  inputBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EDF2F7',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    paddingHorizontal: 18,
     paddingVertical: 14,
+    marginBottom: 20,
+    position: 'relative',
+  },
+  textInput: {
+    flex: 1,
     fontSize: 15,
-    color: '#333333',
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+    color: '#0B122A',
+    fontFamily: POPPINS_REGULAR,
+    padding: 0,
   },
   errorText: {
     color: '#FF3B30',
     fontSize: 13,
     marginBottom: 16,
-    fontFamily: ROUNDED_FONT,
+    fontFamily: POPPINS_REGULAR,
   },
-  actionButton: {
+  sendButton: {
     width: '100%',
-    backgroundColor: '#00FF9D',
-    borderRadius: 12,
+    backgroundColor: '#00E5C0',
+    borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    elevation: 3,
+    shadowColor: '#00E5C0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '900',
+  sendButtonText: {
+    color: '#060B0E',
+    fontSize: 17,
+    fontWeight: 'bold',
+    fontFamily: POPPINS_SEMIBOLD,
+  },
+  dividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E2E8F0',
+  },
+  dividerText: {
+    fontSize: 11.5,
+    color: '#94A3B8',
+    fontFamily: POPPINS_REGULAR,
+    paddingHorizontal: 12,
     letterSpacing: 0.8,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
+  },
+  backToLoginButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  backArrowText: {
+    fontSize: 18,
+    color: '#00E5C0',
+    fontWeight: 'bold',
+  },
+  backToLoginText: {
+    fontSize: 15,
+    color: '#00E5C0',
+    fontFamily: POPPINS_SEMIBOLD,
   },
 });
 
