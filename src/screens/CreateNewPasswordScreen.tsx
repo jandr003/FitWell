@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
-    justify.content: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
     elevation: 3,
     shadowColor: '#00E5C0',
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   },
   backToLoginButton: {
     flexDirection: 'row',
-    justify.content: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     marginTop: -4,
   },
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     backgroundColor: '#00E5C0',
     alignItems: 'center',
-    justify.content: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
   },
   successIconText: {
