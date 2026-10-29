@@ -388,7 +388,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 16,
-    justify.content: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   otpBoxInput: {
