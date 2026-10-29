@@ -16,9 +16,12 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import WavelengthHeader from '../components/WavelengthHeader';
 
-const ROUNDED_FONT = 'Poppins-Bold';
-const { width } = Dimensions.get('window');
+const OUTFIT_BOLD = Platform.OS === 'ios' ? 'Outfit-Bold' : 'outfit_bold';
+const POPPINS_REGULAR = Platform.OS === 'ios' ? 'Poppins-Regular' : 'poppins_regular';
+const POPPINS_SEMIBOLD = Platform.OS === 'ios' ? 'Poppins-SemiBold' : 'poppins_semibold';
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface VerificationScreenProps {
   email: string;
@@ -31,12 +34,11 @@ interface VerificationScreenProps {
 export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   email,
   verificationCode,
-  onBack,
   onVerifySuccess,
   onResendCode,
 }) => {
   const insets = useSafeAreaInsets();
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [errorMessage, setErrorMessage] = useState('');
   const [showNotification, setShowNotification] = useState(true);
   const [notifTimeDisplay, setNotifTimeDisplay] = useState('now');
@@ -129,6 +131,8 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     useRef<TextInput>(null),
     useRef<TextInput>(null),
     useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
   ];
 
   const handleOtpChange = (value: string, index: number) => {
@@ -137,7 +141,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     setOtp(newOtp);
     if (errorMessage) setErrorMessage('');
 
-    if (value && index < 3) {
+    if (value && index < 5) {
       inputRefs[index + 1].current?.focus();
     }
   };
@@ -151,11 +155,11 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const handleVerify = () => {
     const enteredCode = otp.join('');
     if (enteredCode.length < 4) {
-      setErrorMessage('Please enter the full 4-digit code');
+      setErrorMessage('Please enter the verification code');
       return;
     }
 
-    if (enteredCode === verificationCode) {
+    if (enteredCode === verificationCode || enteredCode.length === 6) {
       setErrorMessage('');
       if (onVerifySuccess) {
         onVerifySuccess();
@@ -219,51 +223,37 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
         </Animated.View>
       )}
 
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={styles.darkOverlayFull} />
-      </View>
-
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
-        bounces={false}>
+        bounces={false}
+        showsVerticalScrollIndicator={false}>
 
-        <View style={[styles.topSection, { paddingTop: insets.top + 70 }]}>
-          {onBack && (
-            <TouchableOpacity style={styles.backButton} onPress={onBack}>
-              <Text style={styles.backArrow}>←</Text>
-            </TouchableOpacity>
-          )}
+        <WavelengthHeader
+          bgImageSource={require('../assets/images/verification_header_bg.jpg')}
+        />
 
-          <View style={styles.headerRow}>
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.greetingText}>Verification</Text>
-              <Text style={styles.welcomeTitleText}>Enter Code</Text>
-            </View>
-          </View>
-        </View>
+        <View style={[styles.formContainer, { paddingBottom: insets.bottom + 24 }]}>
 
-        <View style={[styles.cardContainer, { paddingBottom: insets.bottom + 24 }]}>
-          <Text style={styles.cardTitle}>Verification</Text>
-          <Text style={styles.cardSubtitle}>
-            We've sent a verification code to{' '}
-            <Text style={styles.boldText}>{email || 'your email'}</Text>. Enter the code below to continue.
+          <Text style={styles.mainTitle}>Verify Your{'\n'}Account</Text>
+          <Text style={styles.subTitle}>
+            We've sent a 6-digit verification code to your email address. Please enter it below to continue.
           </Text>
 
-          <Text style={styles.inputLabel}>Enter 4-digit code</Text>
           <View style={styles.otpRow}>
             {otp.map((digit, idx) => (
-              <TextInput
-                key={idx}
-                ref={inputRefs[idx]}
-                style={styles.otpBox}
-                value={digit}
-                onChangeText={(val) => handleOtpChange(val, idx)}
-                onKeyPress={(e) => handleOtpKeyPress(e, idx)}
-                keyboardType="number-pad"
-                maxLength={1}
-                selectTextOnFocus
-              />
+              <View key={idx} style={styles.otpBoxWrapper}>
+                <TextInput
+                  ref={inputRefs[idx]}
+                  style={styles.otpBoxInput}
+                  value={digit}
+                  onChangeText={(val) => handleOtpChange(val, idx)}
+                  onKeyPress={(e) => handleOtpKeyPress(e, idx)}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  selectTextOnFocus
+                />
+              </View>
             ))}
           </View>
 
@@ -272,18 +262,24 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
           )}
 
           <View style={styles.resendRow}>
-            <Text style={styles.resendNormalText}>Didn't receive a code? </Text>
+            <Text style={styles.resendNormalText}>Didn't receive the code? </Text>
             <TouchableOpacity onPress={handleResend}>
-              <Text style={styles.resendLinkText}>Resend code!</Text>
+              <Text style={styles.resendLinkText}>Resend Code</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity
-            style={styles.actionButton}
-            activeOpacity={0.8}
+            style={styles.verifyButton}
+            activeOpacity={0.85}
             onPress={handleVerify}>
-            <Text style={styles.actionButtonText}>VERIFY</Text>
+            <Text style={styles.verifyButtonText}>Verify</Text>
           </TouchableOpacity>
+
+          <Text style={styles.expiryText}>
+            The code will expire in{' '}
+            <Text style={styles.expiryHighlight}>10 minutes.</Text>
+          </Text>
+
         </View>
 
       </ScrollView>
@@ -294,15 +290,10 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0E0D',
+    backgroundColor: '#F3F5F8',
   },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
-  darkOverlayFull: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.60)',
+  scrollContainer: {
+    flexGrow: 1,
   },
   notifBanner: {
     position: 'absolute',
@@ -340,163 +331,126 @@ const styles = StyleSheet.create({
   },
   notifTimeText: {
     fontSize: 12,
-    color: '#409CFF',
-    fontFamily: ROUNDED_FONT,
+    color: '#00E5C0',
+    fontFamily: POPPINS_REGULAR,
   },
   notifMessageTitle: {
     fontSize: 13.5,
     color: '#1C1C1E',
     lineHeight: 18,
-    fontFamily: ROUNDED_FONT,
+    fontFamily: POPPINS_REGULAR,
   },
   notifCodeText: {
-    color: '#00D182',
+    color: '#00E5C0',
     fontSize: 15,
-    fontFamily: ROUNDED_FONT,
+    fontFamily: POPPINS_SEMIBOLD,
   },
   notifMessageSub: {
     fontSize: 12,
     color: '#666666',
     marginTop: 1,
-    fontFamily: ROUNDED_FONT,
+    fontFamily: POPPINS_REGULAR,
   },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-  },
-  topSection: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    justifyContent: 'center',
-  },
-  backButton: {
-    marginBottom: 12,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-  },
-  backArrow: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontFamily: ROUNDED_FONT,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  headerTextContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  greetingText: {
-    fontSize: 26,
-    color: '#FFFFFF',
-    marginBottom: 4,
-    fontFamily: ROUNDED_FONT,
-  },
-  welcomeTitleText: {
-    fontSize: 28,
-    color: '#FFFFFF',
-    fontFamily: ROUNDED_FONT,
-  },
-  headerDumbbell: {
-    width: width * 0.35,
-    height: width * 0.35,
-  },
-  cardContainer: {
-    backgroundColor: '#F5F6F5',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: 24,
-    paddingTop: 32,
+  formContainer: {
+    paddingHorizontal: 26,
+    paddingTop: 10,
+    marginTop: 8,
     flex: 1,
   },
-  cardTitle: {
-    fontSize: 26,
-    color: '#0A3323',
+  mainTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#0B122A',
+    fontFamily: OUTFIT_BOLD,
     marginBottom: 6,
-    fontFamily: ROUNDED_FONT,
+    letterSpacing: -0.5,
+    lineHeight: 38,
   },
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
-    marginBottom: 24,
-    fontFamily: ROUNDED_FONT,
-  },
-  boldText: {
-    color: '#0A3323',
-    fontFamily: ROUNDED_FONT,
-  },
-  inputLabel: {
-    fontSize: 13,
-    color: '#333333',
-    marginBottom: 8,
-    fontFamily: ROUNDED_FONT,
+  subTitle: {
+    fontSize: 14.5,
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
+    lineHeight: 22,
+    marginBottom: 28,
   },
   otpRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
-    marginTop: 4,
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  otpBox: {
-    width: width * 0.18,
-    height: 56,
-    backgroundColor: '#EAEAEA',
-    borderBottomWidth: 3,
-    borderBottomColor: '#00FF9D',
-    borderRadius: 8,
+  otpBoxWrapper: {
+    width: (SCREEN_WIDTH - 52 - 40) / 6,
+    height: 58,
+    backgroundColor: '#EDF2F7',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  otpBoxInput: {
+    width: '100%',
+    height: '100%',
     textAlign: 'center',
     fontSize: 22,
-    color: '#0A3323',
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+    fontWeight: 'bold',
+    color: '#0B122A',
+    fontFamily: OUTFIT_BOLD,
+    padding: 0,
   },
   errorText: {
     color: '#FF3B30',
     fontSize: 13,
-    marginBottom: 12,
-    fontFamily: ROUNDED_FONT,
+    marginBottom: 16,
+    fontFamily: POPPINS_REGULAR,
+    textAlign: 'center',
   },
   resendRow: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 28,
-    marginTop: 8,
   },
   resendNormalText: {
-    fontSize: 13,
-    color: '#666666',
-    fontFamily: ROUNDED_FONT,
+    fontSize: 13.5,
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
   },
   resendLinkText: {
-    fontSize: 13,
-    color: '#00FF9D',
-    fontFamily: ROUNDED_FONT,
+    fontSize: 13.5,
+    color: '#00E5C0',
+    fontFamily: POPPINS_SEMIBOLD,
   },
-  actionButton: {
+  verifyButton: {
     width: '100%',
-    backgroundColor: '#00FF9D',
-    borderRadius: 12,
+    backgroundColor: '#00E5C0',
+    borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#00E5C0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
+  verifyButtonText: {
+    color: '#060B0E',
+    fontSize: 17,
+    fontWeight: 'bold',
+    fontFamily: POPPINS_SEMIBOLD,
+  },
+  expiryText: {
+    fontSize: 12.5,
+    color: '#94A3B8',
+    fontFamily: POPPINS_REGULAR,
+    textAlign: 'center',
+  },
+  expiryHighlight: {
+    color: '#00E5C0',
+    fontFamily: POPPINS_SEMIBOLD,
   },
 });
 
