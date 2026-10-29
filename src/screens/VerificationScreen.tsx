@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
   },
   notifHeaderRow: {
     flexDirection: 'row',
-    justify.content: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 2,
   },
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    justify.content: 'space-evenly',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     marginBottom: 20,
     paddingHorizontal: 12,
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 16,
-    justify.content: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   otpBoxInput: {
