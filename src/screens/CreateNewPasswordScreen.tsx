@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CBD5E1',
     alignItems: 'center',
-    justify.content: 'center',
+    justifyContent: 'center',
     marginRight: 10,
   },
   checkCircleActive: {
