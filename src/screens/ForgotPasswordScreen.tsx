@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 18,
   },
   dividerLine: {
     flex: 1,
@@ -205,12 +205,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: -4,
   },
   backToLoginText: {
-    fontSize: 15,
+    fontSize: 14.5,
     color: '#00E5C0',
     fontFamily: POPPINS_SEMIBOLD,
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
 });
 
