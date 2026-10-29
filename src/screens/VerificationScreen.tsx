@@ -23,17 +23,6 @@ const POPPINS_REGULAR = Platform.OS === 'ios' ? 'Poppins-Regular' : 'poppins_reg
 const POPPINS_SEMIBOLD = Platform.OS === 'ios' ? 'Poppins-SemiBold' : 'poppins_semibold';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const getCurrentTimeFormatted = () => {
-  const now = new Date();
-  let hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12;
-  hours = hours ? hours : 12;
-  const minutesStr = minutes < 10 ? `0${minutes}` : minutes;
-  return `${hours}:${minutesStr} ${ampm}`;
-};
-
 interface VerificationScreenProps {
   email: string;
   verificationCode: string;
@@ -52,14 +41,16 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const [otp, setOtp] = useState(['', '', '', '']);
   const [errorMessage, setErrorMessage] = useState('');
   const [showNotification, setShowNotification] = useState(true);
-  const [notifTimeDisplay, setNotifTimeDisplay] = useState(getCurrentTimeFormatted());
+  const [notifTimeDisplay, setNotifTimeDisplay] = useState('now');
+  const notifStartTimeRef = useRef<number>(Date.now());
 
   const notifAnim = useRef(new Animated.Value(-120)).current;
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const triggerNotification = () => {
     setShowNotification(true);
-    setNotifTimeDisplay(getCurrentTimeFormatted());
+    notifStartTimeRef.current = Date.now();
+    setNotifTimeDisplay('now');
     notifAnim.setValue(-120);
 
     Animated.spring(notifAnim, {
@@ -105,7 +96,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       }).start(() => {
         setShowNotification(false);
       });
-    }, 4500);
+    }, 6000);
   };
 
   useEffect(() => {
@@ -116,6 +107,24 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       }
     };
   }, [verificationCode]);
+
+  useEffect(() => {
+    if (!showNotification) return;
+
+    const interval = setInterval(() => {
+      const elapsedSec = Math.floor((Date.now() - notifStartTimeRef.current) / 1000);
+      if (elapsedSec < 1) {
+        setNotifTimeDisplay('now');
+      } else if (elapsedSec < 60) {
+        setNotifTimeDisplay(`${elapsedSec}s ago`);
+      } else {
+        const elapsedMin = Math.floor(elapsedSec / 60);
+        setNotifTimeDisplay(`${elapsedMin}m ago`);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [showNotification]);
 
   const inputRefs = [
     useRef<TextInput>(null),
