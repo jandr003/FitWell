@@ -42,10 +42,26 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [showNotification, setShowNotification] = useState(true);
   const [notifTimeDisplay, setNotifTimeDisplay] = useState('now');
+  const [expirySeconds, setExpirySeconds] = useState(600);
   const notifStartTimeRef = useRef<number>(Date.now());
 
   const notifAnim = useRef(new Animated.Value(-120)).current;
   const dismissTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const formatCountdownTime = (totalSeconds: number) => {
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    const minsStr = mins < 10 ? `0${mins}` : `${mins}`;
+    const secsStr = secs < 10 ? `0${secs}` : `${secs}`;
+    return `${minsStr}:${secsStr}`;
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setExpirySeconds((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const triggerNotification = () => {
     setShowNotification(true);
@@ -192,6 +208,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const handleResend = () => {
     setOtp(['', '', '', '']);
     setErrorMessage('');
+    setExpirySeconds(600);
     inputRefs[0].current?.focus();
     if (onResendCode) {
       onResendCode();
@@ -302,7 +319,9 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
 
           <Text style={styles.expiryText}>
             The code will expire in{' '}
-            <Text style={styles.expiryHighlight}>10 minutes.</Text>
+            <Text style={styles.expiryHighlight}>
+              {formatCountdownTime(expirySeconds)}
+            </Text>
           </Text>
 
         </View>
@@ -400,7 +419,7 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justify.content: 'space-evenly',
     alignItems: 'center',
     marginBottom: 20,
     paddingHorizontal: 12,
