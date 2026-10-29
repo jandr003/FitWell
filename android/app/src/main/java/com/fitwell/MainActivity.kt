@@ -63,6 +63,8 @@ class MainActivity : ReactActivity() {
       .setStyle(NotificationCompat.BigTextStyle().bigText(message))
       .setPriority(NotificationCompat.PRIORITY_MAX)
       .setDefaults(NotificationCompat.DEFAULT_ALL)
+      .setWhen(System.currentTimeMillis())
+      .setShowWhen(true)
       .setAutoCancel(true)
 
     val notificationId = (System.currentTimeMillis() % 10000).toInt() + 1000
