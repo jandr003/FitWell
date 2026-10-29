@@ -53,7 +53,9 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
         bounces={false}
         showsVerticalScrollIndicator={false}>
 
-        <WavelengthHeader />
+        <WavelengthHeader
+          bgImageSource={require('../assets/images/forgot_pass_header_bg.jpg')}
+        />
 
         <View style={[styles.formContainer, { paddingBottom: insets.bottom + 24 }]}>
 
