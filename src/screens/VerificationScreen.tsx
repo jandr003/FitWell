@@ -96,7 +96,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       }).start(() => {
         setShowNotification(false);
       });
-    }, 15000);
+    }, 12000);
   };
 
   useEffect(() => {
@@ -113,15 +113,19 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
 
     const interval = setInterval(() => {
       const elapsedSec = Math.floor((Date.now() - notifStartTimeRef.current) / 1000);
-      if (elapsedSec <= 0) {
+      if (elapsedSec < 5) {
         setNotifTimeDisplay('now');
-      } else if (elapsedSec < 60) {
-        setNotifTimeDisplay(`${elapsedSec}s ago`);
+      } else if (elapsedSec < 10) {
+        setNotifTimeDisplay('5s ago');
+      } else if (elapsedSec < 15) {
+        setNotifTimeDisplay('10s ago');
+      } else if (elapsedSec < 20) {
+        setNotifTimeDisplay('15s ago');
       } else {
         const elapsedMin = Math.floor(elapsedSec / 60);
-        setNotifTimeDisplay(`${elapsedMin}m ago`);
+        setNotifTimeDisplay(`${elapsedMin > 0 ? elapsedMin : 1}m ago`);
       }
-    }, 1000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [showNotification]);
@@ -320,7 +324,7 @@ const styles = StyleSheet.create({
   },
   notifHeaderRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justify.content: 'space-between',
     alignItems: 'center',
     marginBottom: 2,
   },
@@ -376,7 +380,7 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justify.content: 'space-evenly',
     alignItems: 'center',
     marginBottom: 20,
     paddingHorizontal: 12,
@@ -388,7 +392,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 16,
-    justifyContent: 'center',
+    justify.content: 'center',
     alignItems: 'center',
   },
   otpBoxInput: {
