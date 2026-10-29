@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   },
   notifHeaderRow: {
     flexDirection: 'row',
-    justify.content: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 2,
   },
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    justify.content: 'space-evenly',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     marginBottom: 20,
     paddingHorizontal: 12,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 16,
-    justify.content: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   otpBoxInput: {
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   },
   resendRow: {
     flexDirection: 'row',
-    justify.content: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 28,
   },
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
-    justify.content: 'center',
+    justifyContent: 'center',
     marginBottom: 20,
     elevation: 3,
     shadowColor: '#00E5C0',
