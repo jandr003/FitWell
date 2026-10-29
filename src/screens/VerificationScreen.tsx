@@ -137,20 +137,38 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     useRef<TextInput>(null),
   ];
 
+  const getFirstEmptyIndex = () => {
+    const emptyIdx = otp.findIndex((val) => val === '');
+    return emptyIdx === -1 ? 3 : emptyIdx;
+  };
+
+  const handleBoxFocus = (index: number) => {
+    const targetIdx = getFirstEmptyIndex();
+    if (index > targetIdx) {
+      inputRefs[targetIdx].current?.focus();
+    }
+  };
+
   const handleOtpChange = (value: string, index: number) => {
+    const cleanValue = value.replace(/[^0-9]/g, '');
     const newOtp = [...otp];
-    newOtp[index] = value;
+    newOtp[index] = cleanValue;
     setOtp(newOtp);
     if (errorMessage) setErrorMessage('');
 
-    if (value && index < 3) {
+    if (cleanValue && index < 3) {
       inputRefs[index + 1].current?.focus();
     }
   };
 
   const handleOtpKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs[index - 1].current?.focus();
+    if (e.nativeEvent.key === 'Backspace') {
+      if (!otp[index] && index > 0) {
+        const newOtp = [...otp];
+        newOtp[index - 1] = '';
+        setOtp(newOtp);
+        inputRefs[index - 1].current?.focus();
+      }
     }
   };
 
@@ -174,6 +192,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const handleResend = () => {
     setOtp(['', '', '', '']);
     setErrorMessage('');
+    inputRefs[0].current?.focus();
     if (onResendCode) {
       onResendCode();
     } else {
@@ -252,6 +271,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
                   ref={inputRefs[idx]}
                   style={styles.otpBoxInput}
                   value={digit}
+                  onFocus={() => handleBoxFocus(idx)}
                   onChangeText={(val) => handleOtpChange(val, idx)}
                   onKeyPress={(e) => handleOtpKeyPress(e, idx)}
                   keyboardType="number-pad"
