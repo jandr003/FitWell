@@ -12,6 +12,8 @@ import {
   ScrollView,
   Dimensions,
   Animated,
+  NativeModules,
+  PermissionsAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WavelengthHeader from '../components/WavelengthHeader';
@@ -56,6 +58,31 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       useNativeDriver: true,
       friction: 6,
     }).start();
+
+    if (Platform.OS === 'android') {
+      const sendNativeNotif = () => {
+        if (NativeModules.NotificationModule) {
+          NativeModules.NotificationModule.requestNotificationPermission();
+          NativeModules.NotificationModule.sendNotification(
+            'FitWell Security',
+            `Your verification code is ${verificationCode}`
+          );
+        }
+      };
+
+      const androidApiLevel =
+        typeof Platform.Version === 'number'
+          ? Platform.Version
+          : parseInt(String(Platform.Version), 10);
+
+      if (androidApiLevel >= 33) {
+        PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS' as any)
+          .then(() => sendNativeNotif())
+          .catch(() => sendNativeNotif());
+      } else {
+        sendNativeNotif();
+      }
+    }
 
     if (dismissTimerRef.current) {
       clearTimeout(dismissTimerRef.current);
@@ -141,9 +168,12 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   };
 
   const handleResend = () => {
-    triggerNotification();
+    setOtp(['', '', '', '']);
+    setErrorMessage('');
     if (onResendCode) {
       onResendCode();
+    } else {
+      triggerNotification();
     }
   };
 
@@ -358,7 +388,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 16,
-    justifyContent: 'center',
+    justify.content: 'center',
     alignItems: 'center',
   },
   otpBoxInput: {
