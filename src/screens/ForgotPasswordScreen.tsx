@@ -99,7 +99,6 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({
           <TouchableOpacity
             style={styles.backToLoginButton}
             onPress={onBackToLogin}>
-            <Text style={styles.backArrowText}>← </Text>
             <Text style={styles.backToLoginText}>Back to Login</Text>
           </TouchableOpacity>
 
@@ -207,11 +206,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 4,
-  },
-  backArrowText: {
-    fontSize: 18,
-    color: '#00E5C0',
-    fontWeight: 'bold',
   },
   backToLoginText: {
     fontSize: 15,
