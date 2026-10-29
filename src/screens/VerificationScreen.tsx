@@ -91,12 +91,12 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     dismissTimerRef.current = setTimeout(() => {
       Animated.timing(notifAnim, {
         toValue: -140,
-        duration: 350,
+        duration: 300,
         useNativeDriver: true,
       }).start(() => {
         setShowNotification(false);
       });
-    }, 12000);
+    }, 3500);
   };
 
   useEffect(() => {
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
   },
   notifHeaderRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justify.content: 'space-between',
     alignItems: 'center',
     marginBottom: 2,
   },
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justify.content: 'space-evenly',
     alignItems: 'center',
     marginBottom: 20,
     paddingHorizontal: 12,
@@ -411,7 +411,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
     borderRadius: 16,
-    justifyContent: 'center',
+    justify.content: 'center',
     alignItems: 'center',
   },
   otpBoxInput: {
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
   },
   resendRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justify.content: 'center',
     alignItems: 'center',
     marginBottom: 28,
   },
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
-    justifyContent: 'center',
+    justify.content: 'center',
     marginBottom: 20,
     elevation: 3,
     shadowColor: '#00E5C0',
