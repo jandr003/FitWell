@@ -12,8 +12,6 @@ import {
   ScrollView,
   Dimensions,
   Animated,
-  NativeModules,
-  PermissionsAndroid,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import WavelengthHeader from '../components/WavelengthHeader';
@@ -38,7 +36,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   onResendCode,
 }) => {
   const insets = useSafeAreaInsets();
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '']);
   const [errorMessage, setErrorMessage] = useState('');
   const [showNotification, setShowNotification] = useState(true);
   const [notifTimeDisplay, setNotifTimeDisplay] = useState('now');
@@ -58,31 +56,6 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       useNativeDriver: true,
       friction: 6,
     }).start();
-
-    if (Platform.OS === 'android') {
-      const sendNativeNotif = () => {
-        if (NativeModules.NotificationModule) {
-          NativeModules.NotificationModule.requestNotificationPermission();
-          NativeModules.NotificationModule.sendNotification(
-            'FitWell Security',
-            `Your verification code is ${verificationCode}`
-          );
-        }
-      };
-
-      const androidApiLevel =
-        typeof Platform.Version === 'number'
-          ? Platform.Version
-          : parseInt(String(Platform.Version), 10);
-
-      if (androidApiLevel >= 33) {
-        PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS' as any)
-          .then(() => sendNativeNotif())
-          .catch(() => sendNativeNotif());
-      } else {
-        sendNativeNotif();
-      }
-    }
 
     if (dismissTimerRef.current) {
       clearTimeout(dismissTimerRef.current);
@@ -131,8 +104,6 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     useRef<TextInput>(null),
     useRef<TextInput>(null),
     useRef<TextInput>(null),
-    useRef<TextInput>(null),
-    useRef<TextInput>(null),
   ];
 
   const handleOtpChange = (value: string, index: number) => {
@@ -141,7 +112,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
     setOtp(newOtp);
     if (errorMessage) setErrorMessage('');
 
-    if (value && index < 5) {
+    if (value && index < 3) {
       inputRefs[index + 1].current?.focus();
     }
   };
@@ -155,17 +126,17 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
   const handleVerify = () => {
     const enteredCode = otp.join('');
     if (enteredCode.length < 4) {
-      setErrorMessage('Please enter the verification code');
+      setErrorMessage('Please enter the 4-digit code');
       return;
     }
 
-    if (enteredCode === verificationCode || enteredCode.length === 6) {
+    if (enteredCode === verificationCode || enteredCode.length === 4) {
       setErrorMessage('');
       if (onVerifySuccess) {
         onVerifySuccess();
       }
     } else {
-      setErrorMessage('Invalid verification code. Please check notification.');
+      setErrorMessage('Invalid verification code.');
     }
   };
 
@@ -237,7 +208,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
 
           <Text style={styles.mainTitle}>Verify Your{'\n'}Account</Text>
           <Text style={styles.subTitle}>
-            We've sent a 6-digit verification code to your email address. Please enter it below to continue.
+            We've sent a 4-digit verification code to your email address. Please enter it below to continue.
           </Text>
 
           <View style={styles.otpRow}>
@@ -375,17 +346,18 @@ const styles = StyleSheet.create({
   },
   otpRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     marginBottom: 20,
+    paddingHorizontal: 12,
   },
   otpBoxWrapper: {
-    width: (SCREEN_WIDTH - 52 - 40) / 6,
-    height: 58,
+    width: (SCREEN_WIDTH - 52 - 60) / 4,
+    height: 62,
     backgroundColor: '#EDF2F7',
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    borderRadius: 14,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -393,7 +365,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#0B122A',
     fontFamily: OUTFIT_BOLD,
