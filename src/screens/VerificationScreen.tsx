@@ -96,7 +96,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
       }).start(() => {
         setShowNotification(false);
       });
-    }, 6000);
+    }, 15000);
   };
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export const VerificationScreen: React.FC<VerificationScreenProps> = ({
 
     const interval = setInterval(() => {
       const elapsedSec = Math.floor((Date.now() - notifStartTimeRef.current) / 1000);
-      if (elapsedSec < 1) {
+      if (elapsedSec <= 0) {
         setNotifTimeDisplay('now');
       } else if (elapsedSec < 60) {
         setNotifTimeDisplay(`${elapsedSec}s ago`);
