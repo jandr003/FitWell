@@ -10,20 +10,21 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import WavelengthHeader from '../components/WavelengthHeader';
 
-const ROUNDED_FONT = 'Poppins-Bold';
-const { width } = Dimensions.get('window');
+const OUTFIT_BOLD = Platform.OS === 'ios' ? 'Outfit-Bold' : 'outfit_bold';
+const POPPINS_REGULAR = Platform.OS === 'ios' ? 'Poppins-Regular' : 'poppins_regular';
+const POPPINS_SEMIBOLD = Platform.OS === 'ios' ? 'Poppins-SemiBold' : 'poppins_semibold';
 
 interface CreateNewPasswordScreenProps {
-  onBack?: () => void;
+  onBackToLogin?: () => void;
   onSubmitSuccess?: () => void;
 }
 
 export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = ({
-  onBack,
+  onBackToLogin,
   onSubmitSuccess,
 }) => {
   const insets = useSafeAreaInsets();
@@ -34,13 +35,18 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
   const [errorMessage, setErrorMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const has8Chars = password.length >= 8;
+  const hasNumber = /\d/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+  const hasLower = /[a-z]/.test(password);
+
   const handleSubmit = () => {
     if (!password) {
       setErrorMessage('Please enter a new password');
       return;
     }
-    if (password.length < 6) {
-      setErrorMessage('Password must be at least 6 characters long');
+    if (!has8Chars || !hasNumber || !hasUpper || !hasLower) {
+      setErrorMessage('Please satisfy all password security criteria.');
       return;
     }
     if (password !== confirmPassword) {
@@ -58,44 +64,30 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
 
-      <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <View style={styles.darkOverlayFull} />
-      </View>
-
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
-        bounces={false}>
+        bounces={false}
+        showsVerticalScrollIndicator={false}>
 
-        <View style={[styles.topSection, { paddingTop: insets.top + 20 }]}>
-          {onBack && (
-            <TouchableOpacity style={styles.backButton} onPress={onBack}>
-              <Text style={styles.backArrow}>←</Text>
-            </TouchableOpacity>
-          )}
+        <WavelengthHeader
+          bgImageSource={require('../assets/images/create_pass_header_bg.jpg')}
+        />
 
-          <View style={styles.headerRow}>
-            <View style={styles.headerTextContainer}>
-              <Text style={styles.greetingText}>Create New</Text>
-              <Text style={styles.welcomeTitleText}>Password</Text>
-            </View>
-          </View>
-        </View>
+        <View style={[styles.formContainer, { paddingBottom: insets.bottom + 24 }]}>
 
-        <View style={[styles.cardContainer, { paddingBottom: insets.bottom + 24 }]}>
           {!isSuccess ? (
             <>
-              <Text style={styles.cardTitle}>Create New Password</Text>
-              <Text style={styles.cardSubtitle}>
-                Your new password must be different from previous passwords.
+              <Text style={styles.mainTitle}>Create New{'\n'}Password</Text>
+              <Text style={styles.subTitle}>
+                Your new password must be strong and secure. Make sure it's something you'll remember.
               </Text>
 
-              <Text style={styles.inputLabel}>Password</Text>
-              <View style={styles.inputWrapper}>
+              <View style={styles.inputBox}>
                 <TextInput
-                  style={[styles.input, { paddingRight: 45 }]}
-                  placeholder="Enter Password"
-                  placeholderTextColor="#999999"
+                  style={[styles.textInput, { paddingRight: 40 }]}
+                  placeholder="New password"
+                  placeholderTextColor="#94A3B8"
                   value={password}
                   onChangeText={(val) => {
                     setPassword(val);
@@ -104,7 +96,7 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity
-                  style={styles.eyeIconContainer}
+                  style={styles.eyeIconButton}
                   onPress={() => setShowPassword(!showPassword)}>
                   <Image
                     source={
@@ -118,12 +110,11 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.inputLabel}>New Password</Text>
-              <View style={styles.inputWrapper}>
+              <View style={styles.inputBox}>
                 <TextInput
-                  style={[styles.input, { paddingRight: 45 }]}
-                  placeholder="Confirm New Password"
-                  placeholderTextColor="#999999"
+                  style={[styles.textInput, { paddingRight: 40 }]}
+                  placeholder="Confirm new password"
+                  placeholderTextColor="#94A3B8"
                   value={confirmPassword}
                   onChangeText={(val) => {
                     setConfirmPassword(val);
@@ -132,7 +123,7 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
                   secureTextEntry={!showConfirmPassword}
                 />
                 <TouchableOpacity
-                  style={styles.eyeIconContainer}
+                  style={styles.eyeIconButton}
                   onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
                   <Image
                     source={
@@ -146,36 +137,87 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
                 </TouchableOpacity>
               </View>
 
+              <View style={styles.checklistContainer}>
+                <View style={styles.checkItem}>
+                  <View style={[styles.checkCircle, has8Chars && styles.checkCircleActive]}>
+                    <Text style={[styles.checkMarkText, has8Chars && styles.checkMarkActive]}>✓</Text>
+                  </View>
+                  <Text style={[styles.checkLabel, has8Chars && styles.checkLabelActive]}>
+                    At least 8 characters
+                  </Text>
+                </View>
+
+                <View style={styles.checkItem}>
+                  <View style={[styles.checkCircle, hasNumber && styles.checkCircleActive]}>
+                    <Text style={[styles.checkMarkText, hasNumber && styles.checkMarkActive]}>✓</Text>
+                  </View>
+                  <Text style={[styles.checkLabel, hasNumber && styles.checkLabelActive]}>
+                    Contains a number
+                  </Text>
+                </View>
+
+                <View style={styles.checkItem}>
+                  <View style={[styles.checkCircle, hasUpper && styles.checkCircleActive]}>
+                    <Text style={[styles.checkMarkText, hasUpper && styles.checkMarkActive]}>✓</Text>
+                  </View>
+                  <Text style={[styles.checkLabel, hasUpper && styles.checkLabelActive]}>
+                    Contains an uppercase letter
+                  </Text>
+                </View>
+
+                <View style={styles.checkItem}>
+                  <View style={[styles.checkCircle, hasLower && styles.checkCircleActive]}>
+                    <Text style={[styles.checkMarkText, hasLower && styles.checkMarkActive]}>✓</Text>
+                  </View>
+                  <Text style={[styles.checkLabel, hasLower && styles.checkLabelActive]}>
+                    Contains a lowercase letter
+                  </Text>
+                </View>
+              </View>
+
               {errorMessage !== '' && (
                 <Text style={styles.errorText}>{errorMessage}</Text>
               )}
 
               <TouchableOpacity
-                style={styles.actionButton}
-                activeOpacity={0.8}
+                style={styles.resetButton}
+                activeOpacity={0.85}
                 onPress={handleSubmit}>
-                <Text style={styles.actionButtonText}>CONTINUE</Text>
+                <Text style={styles.resetButtonText}>Reset Password</Text>
+              </TouchableOpacity>
+
+              <View style={styles.dividerRow}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>OR</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              <TouchableOpacity
+                style={styles.backToLoginButton}
+                onPress={onBackToLogin}>
+                <Text style={styles.backToLoginText}>Back to Login</Text>
               </TouchableOpacity>
             </>
           ) : (
-            <View style={styles.successContainer}>
+            <View style={styles.successWrapper}>
               <View style={styles.successBadge}>
-                <Text style={styles.successBadgeText}>✓</Text>
+                <Text style={styles.successIconText}>✓</Text>
               </View>
 
-              <Text style={styles.cardTitle}>Password Changed!</Text>
-              <Text style={styles.cardSubtitleCenter}>
+              <Text style={styles.mainTitleCenter}>Password Changed!</Text>
+              <Text style={styles.subTitleCenter}>
                 Your password has been reset successfully. You can now log in with your new password.
               </Text>
 
               <TouchableOpacity
-                style={styles.actionButton}
-                activeOpacity={0.8}
+                style={styles.resetButton}
+                activeOpacity={0.85}
                 onPress={onSubmitSuccess}>
-                <Text style={styles.actionButtonText}>BACK TO LOGIN</Text>
+                <Text style={styles.resetButtonText}>Back to Login</Text>
               </TouchableOpacity>
             </View>
           )}
+
         </View>
 
       </ScrollView>
@@ -186,167 +228,192 @@ export const CreateNewPasswordScreen: React.FC<CreateNewPasswordScreenProps> = (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0B0E0D',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-  },
-  darkOverlayFull: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.60)',
+    backgroundColor: '#F3F5F8',
   },
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: 'space-between',
   },
-  topSection: {
-    paddingHorizontal: 24,
-    paddingBottom: 24,
-    justifyContent: 'center',
-  },
-  backButton: {
-    marginBottom: 12,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-  },
-  backArrow: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontFamily: ROUNDED_FONT,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  headerTextContainer: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  greetingText: {
-    fontSize: 26,
-    color: '#FFFFFF',
-    marginBottom: 4,
-    fontFamily: ROUNDED_FONT,
-  },
-  welcomeTitleText: {
-    fontSize: 28,
-    color: '#FFFFFF',
-    fontFamily: ROUNDED_FONT,
-  },
-  headerDumbbell: {
-    width: width * 0.35,
-    height: width * 0.35,
-  },
-  cardContainer: {
-    backgroundColor: '#F5F6F5',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
-    paddingHorizontal: 24,
-    paddingTop: 32,
+  formContainer: {
+    paddingHorizontal: 26,
+    paddingTop: 10,
+    marginTop: 8,
     flex: 1,
   },
-  cardTitle: {
-    fontSize: 26,
-    color: '#0A3323',
+  mainTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#0B122A',
+    fontFamily: OUTFIT_BOLD,
     marginBottom: 6,
-    fontFamily: ROUNDED_FONT,
+    letterSpacing: -0.5,
+    lineHeight: 38,
   },
-  cardSubtitle: {
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
-    marginBottom: 24,
-    fontFamily: ROUNDED_FONT,
-  },
-  cardSubtitleCenter: {
-    fontSize: 14,
-    color: '#666666',
-    lineHeight: 20,
-    marginBottom: 28,
-    textAlign: 'center',
-    fontFamily: ROUNDED_FONT,
-  },
-  inputLabel: {
-    fontSize: 13,
-    color: '#333333',
-    marginBottom: 8,
-    fontFamily: ROUNDED_FONT,
-  },
-  inputWrapper: {
-    position: 'relative',
+  subTitle: {
+    fontSize: 14.5,
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
+    lineHeight: 22,
     marginBottom: 20,
   },
-  input: {
-    backgroundColor: '#EAEAEA',
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 15,
-    color: '#333333',
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
-  },
-  eyeIconContainer: {
-    position: 'absolute',
-    right: 14,
-    top: 0,
-    bottom: 0,
-    justifyContent: 'center',
+  inputBox: {
+    flexDirection: 'row',
     alignItems: 'center',
-    width: 32,
+    backgroundColor: '#EDF2F7',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    marginBottom: 14,
+    position: 'relative',
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 15,
+    color: '#0B122A',
+    fontFamily: POPPINS_REGULAR,
+    padding: 0,
+  },
+  eyeIconButton: {
+    position: 'absolute',
+    right: 16,
+    padding: 4,
   },
   eyeIconImage: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
+    tintColor: '#64748B',
+  },
+  checklistContainer: {
+    marginBottom: 20,
+    marginTop: 4,
+  },
+  checkItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  checkCircle: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#EDF2F7',
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+    alignItems: 'center',
+    justify.content: 'center',
+    marginRight: 10,
+  },
+  checkCircleActive: {
+    backgroundColor: '#00E5C0',
+    borderColor: '#00E5C0',
+  },
+  checkMarkText: {
+    fontSize: 11,
+    color: '#94A3B8',
+    fontWeight: 'bold',
+  },
+  checkMarkActive: {
+    color: '#060B0E',
+  },
+  checkLabel: {
+    fontSize: 13.5,
+    color: '#94A3B8',
+    fontFamily: POPPINS_REGULAR,
+  },
+  checkLabelActive: {
+    color: '#0B122A',
+    fontFamily: POPPINS_SEMIBOLD,
   },
   errorText: {
     color: '#FF3B30',
     fontSize: 13,
     marginBottom: 16,
-    fontFamily: ROUNDED_FONT,
+    fontFamily: POPPINS_REGULAR,
   },
-  actionButton: {
+  resetButton: {
     width: '100%',
-    backgroundColor: '#00FF9D',
-    borderRadius: 12,
+    backgroundColor: '#00E5C0',
+    borderRadius: 28,
     paddingVertical: 16,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 24,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    justify.content: 'center',
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#00E5C0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif-medium',
+  resetButtonText: {
+    color: '#060B0E',
+    fontSize: 17,
+    fontWeight: 'bold',
+    fontFamily: POPPINS_SEMIBOLD,
   },
-  successContainer: {
+  dividerRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 10,
-    width: '100%',
+    marginBottom: 18,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E2E8F0',
+  },
+  dividerText: {
+    fontSize: 11.5,
+    color: '#94A3B8',
+    fontFamily: POPPINS_REGULAR,
+    paddingHorizontal: 12,
+    letterSpacing: 0.8,
+  },
+  backToLoginButton: {
+    flexDirection: 'row',
+    justify.content: 'center',
+    alignItems: 'center',
+    marginTop: -4,
+  },
+  backToLoginText: {
+    fontSize: 14.5,
+    color: '#00E5C0',
+    fontFamily: POPPINS_SEMIBOLD,
+    fontWeight: '600',
+    letterSpacing: 0.2,
+  },
+  successWrapper: {
+    alignItems: 'center',
+    paddingTop: 20,
   },
   successBadge: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#00FF9D',
+    backgroundColor: '#00E5C0',
     alignItems: 'center',
-    justifyContent: 'center',
+    justify.content: 'center',
     marginBottom: 20,
   },
-  successBadgeText: {
-    color: '#FFFFFF',
+  successIconText: {
+    color: '#060B0E',
     fontSize: 32,
-    fontFamily: ROUNDED_FONT,
+    fontWeight: 'bold',
+  },
+  mainTitleCenter: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#0B122A',
+    fontFamily: OUTFIT_BOLD,
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  subTitleCenter: {
+    fontSize: 14.5,
+    color: '#64748B',
+    fontFamily: POPPINS_REGULAR,
+    lineHeight: 22,
+    marginBottom: 28,
+    textAlign: 'center',
   },
 });
 
