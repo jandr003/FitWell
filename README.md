@@ -10,7 +10,11 @@
 [![Gradle](https://img.shields.io/badge/Gradle-8.9-02303A?style=flat-square&logo=gradle&logoColor=white)](https://gradle.org/)
 
 > [!NOTE]
-> I'm currently updating FitWell's color palette to match the new UI design
+> **PROJECT STATUS: ON HOLD**
+>
+> I'm currently updating FitWell's color palette to match the new UI design.
+>
+> Development is temporarily on hold while other projects take priority. Work will resume once those projects are completed.
 
 FitWell is a fitness and health tracking mobile application designed to provide personalized workout routines, exercise tracking, account security, and progress monitoring.
 
@@ -49,11 +53,5 @@ The application features a dark, modern interface with responsive layouts design
 |---|---|---|
 | Android Studio | Ladybug 2026.1.4 | Android development and debugging |
 | Gradle | 8.9 | Build automation and dependency management |
-
-## Project Status
-
-**On Hold**
-
-Development is currently on hold while other projects take priority. Work on FitWell will resume once those projects are completed.
 
 The original version was developed using Kotlin, XML, and Firebase. The planned new version will use React Native, TypeScript, Node.js, Express.js, and PostgreSQL, with a redesigned interface and updated application structure.
